@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/sky_view">
+
+    <fragment
+        android:id="@+id/sky_view"
+        android:name="com.echo.skygazer.ui.sky.SkyFragment"
+        android:label="@string/title_sky_view"
+        tools:layout="@layout/fragment_sky" />
+
+    <fragment
+        android:id="@+id/map_view"
+        android:name="com.echo.skygazer.ui.map.MapFragment"
+        android:label="@string/title_map_view"
+        tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.echo.skygazer.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>
