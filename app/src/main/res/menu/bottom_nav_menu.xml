@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/map_view"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_map_view" />
+
+    <item
+        android:id="@+id/sky_view"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_sky_view" />
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/title_settings" />
+
+</menu>
