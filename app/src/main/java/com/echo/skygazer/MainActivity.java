@@ -17,10 +17,20 @@ import com.echo.skygazer.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    public enum NavSectionID { MAP, SKY, SETTINGS, UNKNOWN }
+    private NavSectionID navSectionId = NavSectionID.UNKNOWN;
+
+    /**
+     * Get current navigation section (SKY, MAP, SETTINGS, UNKNOWN). Use NavSetionID.[id] to reference these.
+     * @return
+     */
+    public NavSectionID getCurrentNavSection() {
+        return navSectionId;
+    }
 
     /**
      * Show or hide the upper title bar ("support action bar"). This can be distracting, so it should be hidden when in the sky view.
-     * @param shown
+     * @param shown If true, the upper title bar will become visible upon method call. If false, it will disappear upon method call.
      */
     private void setSupportActionBarState(boolean shown) {
         try {
@@ -34,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method called automatically near launch of the application. At the end of this function, Main.main() is called.
-     * @param savedInstanceState
+     * @param savedInstanceState "IDK, but method gets called automatically so it doesn't really matter"
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,26 +66,30 @@ public class MainActivity extends AppCompatActivity {
         //Listener for app location change (Map, Sky, Settings)
         navController.addOnDestinationChangedListener(
             (thisNavCtrl, navDst, bundle) -> {
+                navSectionId = NavSectionID.UNKNOWN;
+
                 assert navDst.getLabel() != null;
                 String dstName = navDst.getLabel().toString();
                 switch(dstName) {
                     case "Map": {
-                        Main.log("Displaying the Map fragment.");
+                        navSectionId = NavSectionID.MAP;
                         setSupportActionBarState(true);
                         break;
                     }
                     case "Sky": {
-                        Main.log("Displaying the Sky fragment.");
+                        navSectionId = NavSectionID.SKY;
                         //Hide upper title bar when displaying the sky
                         setSupportActionBarState(false);
                         break;
                     }
                     case "Settings": {
-                        Main.log("Displaying the Settings fragment.");
+                        navSectionId = NavSectionID.SETTINGS;
                         setSupportActionBarState(true);
                         break;
                     }
                 }
+
+                Main.log("Displaying fragment '"+getCurrentNavSection().toString()+"'");
             }
         );
 
@@ -101,4 +115,8 @@ public class MainActivity extends AppCompatActivity {
             .setNegativeButton("No", null)                  //No button
             .show();                                                    //Show alert window
     }
+
+    /**
+     * Method called when the user touches the screen
+     */
 }

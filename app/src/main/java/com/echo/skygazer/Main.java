@@ -2,7 +2,11 @@ package com.echo.skygazer;
 
 import android.util.Log;
 
+import java.util.Random;
+
 public class Main {
+
+    public static Random random = new Random(123456);
 
     /**
      * Log string to logcat (System.out.println() doesn't work)
