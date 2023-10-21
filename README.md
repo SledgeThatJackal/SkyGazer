@@ -1,4 +1,6 @@
 # TeamEcho
 Group 1 Capstone Project
 
-![Screenshot of emulator device](/screenshots/demo-3.mp4?raw=true "Demo 3")
+Demo 3:
+https://github.com/SledgeThatJackal/SkyGazer/assets/112023193/fff28cc4-a43e-4b83-953a-4c64032317c0
+
