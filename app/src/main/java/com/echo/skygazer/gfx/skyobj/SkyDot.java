@@ -10,12 +10,12 @@ import com.echo.skygazer.gfx.SkyObject;
 public class SkyDot extends SkyObject
 {
     int color = Color.rgb(255, 200, 200);  //Color to render shape
-    int sizePx = 5;             //Size of circle in pixels
-    int screenX = 100;
-    int screenY = 100;
+    float sizePx = 5;             //Size of circle in pixels
+    float screenX = 100;
+    float screenY = 100;
     String displayName = "null";
 
-    public SkyDot(int screenX, int screenY, String displayName) {
+    public SkyDot(float screenX, float screenY, String displayName) {
         this.screenX = screenX;
         this.screenY = screenY;
         this.displayName = displayName;
@@ -42,6 +42,9 @@ public class SkyDot extends SkyObject
         cs.drawText(displayName, screenX+sizePx, screenY+sizePx, pt);
     }
 
-    public int getScreenX() { return screenX; }
-    public int getScreenY() { return screenY; }
+    public float getScreenX() { return screenX; }
+    public float getScreenY() { return screenY; }
+    public void setScreenX(float screenX) { this.screenX = screenX; }
+    public void setScreenY(float screenY) { this.screenY = screenY; }
+    public void setScreenXY(float screenX, float screenY) { setScreenX(screenX); setScreenY(screenY); }
 }

@@ -1,9 +1,16 @@
 package com.echo.skygazer;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +21,18 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class MainActivity extends AppCompatActivity {
+
+    //Progress Dialog
+    private ProgressDialog progressDialog;
+    public static final int PROGRESS_BAR_TYPE = 0;
 
     private ActivityMainBinding binding;
     public enum NavSectionID { MAP, SKY, SETTINGS, UNKNOWN }
@@ -27,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public NavSectionID getCurrentNavSection() {
         return navSectionId;
     }
+    public ProgressDialog getProgressDialog() { return progressDialog; }
 
     /**
      * Show or hide the upper title bar ("support action bar"). This can be distracting, so it should be hidden when in the sky view.
@@ -97,6 +116,24 @@ public class MainActivity extends AppCompatActivity {
         Main.main(this);
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        ProgressDialog pd = progressDialog;
+        switch (id) {
+            case PROGRESS_BAR_TYPE:
+                pd = new ProgressDialog(this);
+                pd.setMessage("Downloading file. Please wait...");
+                pd.setIndeterminate(false);
+                pd.setMax(100);
+                pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                pd.setCancelable(true);
+                pd.show();
+                return pd;
+            default:
+                return null;
+        }
+    }
+
     /**
      * Method called when the user presses the back button
      */
@@ -104,19 +141,15 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         //Create alert dialog: Ask yes/no whether the user wants to exit the application.
         new AlertDialog.Builder(this)
-            .setIcon(android.R.drawable.ic_dialog_alert)                //Window icon
-            .setTitle("Closing Application")                            //Title
-            .setMessage("Are you sure you want to exit SkyGazer?")      //Message
-            .setPositiveButton("Yes", (dialogInterface, i) -> {    //Yes button
-                //Finish application and exit program
-                finishAffinity();
-                System.exit(0);
-            })
-            .setNegativeButton("No", null)                  //No button
-            .show();                                                    //Show alert window
+                .setIcon(android.R.drawable.ic_dialog_alert)                //Window icon
+                .setTitle("Closing Application")                            //Title
+                .setMessage("Are you sure you want to exit SkyGazer?")      //Message
+                .setPositiveButton("Yes", (dialogInterface, i) -> {    //Yes button
+                    //Finish application and exit program
+                    finishAffinity();
+                    System.exit(0);
+                })
+                .setNegativeButton("No", null)                  //No button
+                .show();                                                    //Show alert window
     }
-
-    /**
-     * Method called when the user touches the screen
-     */
 }
