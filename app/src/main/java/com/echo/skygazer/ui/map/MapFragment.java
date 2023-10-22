@@ -10,11 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentMapBinding;
+import com.mapbox.maps.MapView;
+import com.mapbox.maps.Style;
 
 public class MapFragment extends Fragment {
 
     private FragmentMapBinding binding;
+    private MapView mapView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -26,6 +30,12 @@ public class MapFragment extends Fragment {
 
         final TextView textView = binding.textDashboard;
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        View view = inflater.inflate(R.layout.fragment_map,container,false);
+
+        mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+
         return root;
     }
 
