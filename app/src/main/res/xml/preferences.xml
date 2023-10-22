@@ -33,7 +33,10 @@
         <SwitchPreferenceCompat
             app:key="constellation_highlighting"
             app:title="@string/highlight_constellation_title"
-            app:summary="@string/highlight_constellation_summary"/>
+            app:summary="@string/highlight_constellation_summary"
+            app:enabled="true"
+            app:defaultValue="true"
+            />
 
         <SwitchPreferenceCompat
             app:key="tactile_feedback"
