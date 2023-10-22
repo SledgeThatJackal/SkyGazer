@@ -1,6 +1,8 @@
 package com.echo.skygazer;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -9,6 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
 
@@ -36,3 +39,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+/*  Example code for retrieving a preference variable
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean value = pref.getBoolean("constellation_highlighting" , true);
+
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, String.valueOf(value), duration);
+        toast.show();
+ */
