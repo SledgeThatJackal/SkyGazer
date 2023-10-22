@@ -1,6 +1,7 @@
 # TeamEcho - Noah's Branch
 New features (as of 10/21)
-- Downloading web resources (partial)
+- Downloading and caching web resources
+- Scraping Wikipedia first paragraph (nearly complete - just need to remove unnecessary formatting in the String object)
 - 60fps drawing
 - Drawable sky objects (stars and constellation lines)
 
