@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="general_category"
+        app:title="@string/category_general_title">
+
+        <SwitchPreferenceCompat
+            app:key="cache_star_data"
+            app:title="@string/star_data_cache_title"
+            app:summary="@string/star_data_cache_summary"/>
+
+        <SwitchPreferenceCompat
+            app:key="low_light_mode"
+            app:title="@string/low_light_title"/>
+
+        <SwitchPreferenceCompat
+            app:key="advanced_info"
+            app:title="@string/info_advanced_title"
+            app:summary="@string/info_advanced_summary"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="accessibility_category"
+        app:title="@string/category_accessibility_title">
+
+        <SwitchPreferenceCompat
+            app:key="audio_feedback"
+            app:title="@string/feedback_audio_title"
+            app:summary="@string/feedback_audio_summary"/>
+
+        <SwitchPreferenceCompat
+            app:key="constellation_highlighting"
+            app:title="@string/highlight_constellation_title"
+            app:summary="@string/highlight_constellation_summary"/>
+
+        <SwitchPreferenceCompat
+            app:key="tactile_feedback"
+            app:title="@string/feedback_tactile_title"
+            app:summary="@string/feedback_tactile_summary"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>
