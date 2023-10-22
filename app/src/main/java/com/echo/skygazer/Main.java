@@ -1,44 +1,37 @@
 package com.echo.skygazer;
 
-import static com.echo.skygazer.MainActivity.PROGRESS_BAR_TYPE;
-
-import android.app.DownloadManager;
-import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
+import com.echo.skygazer.io.WebResource;
 
-import com.echo.skygazer.io.Downloader;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
 
 public class Main {
 
+    /* Utility objects */
     public static Random random = new Random(123456);
+    /* Private class members */
+    //MainActivity object
     private static MainActivity mActivity;
-    private static String rootPath = null;
+    //String holding root filepath belonging to this application (should be "/data/user/0/com.echo.skygazer/cache").
+    private static String rootCachePath = null;
 
-    public static String getRootPath() { return rootPath; }
+    /**
+     * Make a new directory in the root cache path.
+     * @param dirName Name of the new directory
+     */
+    private static void mkdir(String dirName) {
+        File myDir = new File(getRootCachePath(), dirName);
+        if(!myDir.mkdir()) {
+            if(!myDir.exists()) {
+                log("ERROR - failed to create directory '"+myDir.getName()+"'");
+            }
+        }
+    }
+
+    public static String getRootCachePath() { return rootCachePath; }
+    public static MainActivity getMainActivity() { return mActivity; }
 
     /**
      * Log string to logcat (System.out.println() doesn't work)
@@ -52,20 +45,29 @@ public class Main {
     }
     public static void log(Object o) { log(o.toString()); }
 
+
     /**
      * Main function. Called at the end of MainActivity.onCreate().
      */
     public static void main(MainActivity mActivity) {
+        //Set MainActivity object and set rootCachePath to "/data/user/0/com.echo.skygazer/cache"
         Main.mActivity = mActivity;
+        rootCachePath = mActivity.getCacheDir().getAbsolutePath();
 
-        //Automatically set to "/data/user/0/com.echo.skygazer/files"
-        rootPath = mActivity.getFilesDir().getAbsolutePath();
-
+        //Starting log messages
         log("Starting SkyGazer...");
-        log("Root path is '"+rootPath+"'.");
+        log("Root cache path is '"+rootCachePath+"'.");
 
-        //To see the downloaded file(s), go to Toolbar > View > Tool Windows > Device Explorer. Then navigate to "/data/user/0/com.echo.skygazer/files/download.txt".
-        Downloader dl = new Downloader("https://raw.githubusercontent.com/astronexus/HYG-Database/master/README.md");
-        dl.saveAs("download.txt");
+        //Create needed cache folders
+        mkdir("wiki");  //Cached wikipedia pages (entire "Sirius" article: ~400KB)
+        mkdir("db");    //Cached databases (For now, one file 'hyg.csv', ~30.8 MB)
+
+        //To see the downloaded file(s), go to Toolbar > View > Tool Windows > Device Explorer. Then navigate to "/data/user/0/com.echo.skygazer/cache".
+        //Download example is below. If you want to use getLine() or getWikipediaInfo(), that must be done in WebResource.onProcessingFinished().
+        WebResource wr = new WebResource("https://en.wikipedia.org/wiki/Sirius", "wiki/Sirius.html", 1234);
+        wr.cache();
+
+        WebResource hyg = new WebResource("https://raw.githubusercontent.com/astronexus/HYG-Database/master/hyg/v3/hyg_v37.csv", "db/hyg.csv");
+        hyg.cache();
     }
 }

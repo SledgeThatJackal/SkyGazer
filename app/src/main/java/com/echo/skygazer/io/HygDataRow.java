@@ -1,6 +1,6 @@
 package com.echo.skygazer.io;
 
-public class HygDatabase
+public class HygDataRow
 {
 
 }
