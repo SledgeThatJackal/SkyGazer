@@ -7,17 +7,17 @@
 
         <SwitchPreferenceCompat
             app:key="cache_star_data"
-            app:title="@string/star_data_cache_title"
-            app:summary="@string/star_data_cache_summary"/>
+            app:summary="@string/star_data_cache_summary"
+            app:title="@string/star_data_cache_title" />
 
         <SwitchPreferenceCompat
             app:key="low_light_mode"
-            app:title="@string/low_light_title"/>
+            app:title="@string/low_light_title" />
 
         <SwitchPreferenceCompat
             app:key="advanced_info"
-            app:title="@string/info_advanced_title"
-            app:summary="@string/info_advanced_summary"/>
+            app:summary="@string/info_advanced_summary"
+            app:title="@string/info_advanced_title" />
 
     </PreferenceCategory>
 
@@ -27,21 +27,20 @@
 
         <SwitchPreferenceCompat
             app:key="audio_feedback"
-            app:title="@string/feedback_audio_title"
-            app:summary="@string/feedback_audio_summary"/>
+            app:summary="@string/feedback_audio_summary"
+            app:title="@string/feedback_audio_title" />
 
         <SwitchPreferenceCompat
-            app:key="constellation_highlighting"
-            app:title="@string/highlight_constellation_title"
-            app:summary="@string/highlight_constellation_summary"
-            app:enabled="true"
             app:defaultValue="true"
-            />
+            app:enabled="true"
+            app:key="constellation_highlighting"
+            app:summary="@string/highlight_constellation_summary"
+            app:title="@string/highlight_constellation_title" />
 
         <SwitchPreferenceCompat
             app:key="tactile_feedback"
-            app:title="@string/feedback_tactile_title"
-            app:summary="@string/feedback_tactile_summary"/>
+            app:summary="@string/feedback_tactile_summary"
+            app:title="@string/feedback_tactile_title" />
 
     </PreferenceCategory>
 </PreferenceScreen>
