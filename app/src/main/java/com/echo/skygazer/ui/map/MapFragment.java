@@ -1,10 +1,12 @@
 package com.echo.skygazer.ui.map;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,21 +15,33 @@ import androidx.lifecycle.ViewModelProvider;
 import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentMapBinding;
 
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+import java.util.List;
 
-public class MapFragment extends Fragment {
+
+public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
     private FragmentMapBinding binding;
     private MapView mapView;
+    private MapboxMap mapboxMap;
+    private PermissionsManager permissionsManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Mapbox.getInstance(getContext().getApplicationContext(), getString(R.string.mapbox_access_token));
+        Context context = getContext().getApplicationContext();
+        Mapbox.getInstance(context, getString(R.string.mapbox_access_token));
 
         MapViewModel dashboardViewModel = new ViewModelProvider(this).get(MapViewModel.class);
 
@@ -39,19 +53,17 @@ public class MapFragment extends Fragment {
 
         mapView = (MapView) root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                    }
-                });
-            }
-        });
+        mapView.getMapAsync(this);
 
         return root;
     }
+    @Override
+    @SuppressWarnings( {"MissingPermission"})
+    public void onStart(){
+        super.onStart();
+        mapView.onStart();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -81,5 +93,60 @@ public class MapFragment extends Fragment {
         super.onDestroyView();
         mapView.onDestroy();
         binding = null;
+    }
+
+    @Override
+    public void onExplanationNeeded(List<String> list) {
+        Context context = getContext().getApplicationContext();
+        Toast.makeText(context, R.string.user_location_permission_explanation, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPermissionResult(boolean granted) {
+        if(granted){
+            mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style){
+                    enableLocationComponent(style);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        MapFragment.this.mapboxMap = mapboxMap;
+        mapboxMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                enableLocationComponent(style);
+            }
+        });
+    }
+
+    @SuppressWarnings( {"MissingPermission"} )
+    private void enableLocationComponent(@NonNull Style loadedMapStyle){
+        Context context = getContext().getApplicationContext();
+        if(PermissionsManager.areLocationPermissionsGranted(context)) {
+            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(context)
+                    .pulseEnabled(true)
+                    .build();
+
+            LocationComponent locationComponent = mapboxMap.getLocationComponent();
+
+            locationComponent.activateLocationComponent(
+                    LocationComponentActivationOptions.builder(context, loadedMapStyle)
+                            .locationComponentOptions(customLocationComponentOptions)
+                            .build());
+
+            locationComponent.setLocationComponentEnabled(true);
+
+            locationComponent.setCameraMode(CameraMode.TRACKING);
+
+            locationComponent.setRenderMode(RenderMode.NORMAL);
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(getActivity());
+        }
     }
 }
