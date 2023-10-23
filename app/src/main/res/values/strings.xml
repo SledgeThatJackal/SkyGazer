@@ -23,4 +23,7 @@
 
     <string name="feedback_tactile_title">Vibrations</string>
     <string name="feedback_tactile_summary">Makes device vibrate when a constellation comes into view</string>
+
+    <string name="notifications_celestial_title">Upcoming Celestial Notifications</string>
+    <string name="notifications_celestial_summary">Whenever there is an upcoming celestial event, you will be sent a notification</string>
 </resources>

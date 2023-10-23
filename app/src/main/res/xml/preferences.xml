@@ -15,6 +15,11 @@
             app:title="@string/low_light_title" />
 
         <SwitchPreferenceCompat
+            app:key="celestial_notifications"
+            app:title="@string/notifications_celestial_title"
+            app:summary="@string/notifications_celestial_summary" />
+
+        <SwitchPreferenceCompat
             app:key="advanced_info"
             app:summary="@string/info_advanced_summary"
             app:title="@string/info_advanced_title" />
@@ -26,16 +31,16 @@
         app:title="@string/category_accessibility_title">
 
         <SwitchPreferenceCompat
-            app:key="audio_feedback"
-            app:summary="@string/feedback_audio_summary"
-            app:title="@string/feedback_audio_title" />
-
-        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:enabled="true"
             app:key="constellation_highlighting"
             app:summary="@string/highlight_constellation_summary"
             app:title="@string/highlight_constellation_title" />
+
+        <SwitchPreferenceCompat
+            app:key="audio_feedback"
+            app:summary="@string/feedback_audio_summary"
+            app:title="@string/feedback_audio_title" />
 
         <SwitchPreferenceCompat
             app:key="tactile_feedback"
