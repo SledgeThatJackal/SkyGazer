@@ -73,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
                 assert navDst.getLabel() != null;
                 String dstName = navDst.getLabel().toString();
                 switch(dstName) {
-                    case "Map": {
+                    case "Map Overlays": {
                         navSectionId = NavSectionID.MAP;
                         setSupportActionBarState(true);
                         break;
                     }
-                    case "Sky": {
+                    case "Sky View": {
                         navSectionId = NavSectionID.SKY;
                         //Hide upper title bar when displaying the sky
                         setSupportActionBarState(false);

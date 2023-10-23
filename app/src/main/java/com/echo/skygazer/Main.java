@@ -65,7 +65,7 @@ public class Main {
         //To see the downloaded file(s), go to Toolbar > View > Tool Windows > Device Explorer. Then navigate to "/data/user/0/com.echo.skygazer/cache".
         //Download example is below. If you want to use getLine() or getWikipediaInfo(), that must be done in WebResource.onProcessingFinished().
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/Sirius", "wiki/Sirius.html", 1234);
-        wr.cache();
+        //wr.cache();
 
         WebResource hyg = new WebResource("https://raw.githubusercontent.com/astronexus/HYG-Database/master/hyg/v3/hyg_v37.csv", "db/hyg.csv");
         hyg.cache();

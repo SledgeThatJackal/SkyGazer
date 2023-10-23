@@ -82,7 +82,7 @@ public class WebResource
      * This method is called whenever the web resource is finished scanning.
      * This could be either when the download finished (slower) or when the cached file is finished being read (faster).
      * Any use of getWikipediaInfo() or getLine() must happen in this method for reliable results.
-     * To help with this process, you can assign an ID in the constructor.
+     * To help with this process, you can assign an ID to the WebResource in the constructor.
      */
     private void onProcessingFinished() {
         Main.log("Web Resource with id="+id+" just finished processing.");
