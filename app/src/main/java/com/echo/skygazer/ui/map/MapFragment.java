@@ -12,8 +12,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentMapBinding;
-import com.mapbox.maps.MapView;
-import com.mapbox.maps.Style;
+
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+
 
 public class MapFragment extends Fragment {
 
@@ -22,8 +27,9 @@ public class MapFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MapViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(MapViewModel.class);
+        Mapbox.getInstance(getContext().getApplicationContext(), getString(R.string.mapbox_access_token));
+
+        MapViewModel dashboardViewModel = new ViewModelProvider(this).get(MapViewModel.class);
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -31,17 +37,49 @@ public class MapFragment extends Fragment {
         final TextView textView = binding.textDashboard;
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        View view = inflater.inflate(R.layout.fragment_map,container,false);
-
-        mapView = (MapView) view.findViewById(R.id.mapView);
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
+        mapView = (MapView) root.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                    }
+                });
+            }
+        });
 
         return root;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mapView.onDestroy();
         binding = null;
     }
 }

@@ -20,7 +20,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.mapbox.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.mapbox.mapboxsdk.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:mapbox="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mapView"
