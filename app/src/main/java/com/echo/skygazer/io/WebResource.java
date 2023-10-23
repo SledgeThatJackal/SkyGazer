@@ -120,6 +120,7 @@ public class WebResource
 
         //Create StringBuilder
         StringBuilder result = new StringBuilder();
+        int paragraphsExtracted = 0;
 
         //Iterate through lines in the HTML file to populate the StringBuilder.
         for(int i = 0; i<dlData.size(); i++) {
@@ -137,8 +138,26 @@ public class WebResource
                 continue;
             //If there is a "<p", parse through it to get the raw text.
             } else {
-                //TODO extract unnecessary web elements to just get the raw text
-                result.append(line);
+                paragraphsExtracted++;
+                if(paragraphsExtracted<=numParagraphs+1) {
+                    StringBuilder rawLine = new StringBuilder();
+                    int startIndex = line.indexOf("<p");
+
+                    //Extract unnecessary web elements to just get the raw text
+                    boolean inWebTag = false;
+                    for(int j = startIndex; j<line.length()-1; j++) {
+                        if( line.charAt(j)=='<' ) { inWebTag = true; continue; }
+                        if(inWebTag && line.charAt(j)=='>') { inWebTag = false; continue; }
+                        if(!inWebTag) { rawLine.append( line.charAt(j) ); }
+                    }
+
+                    //Clean up rawLine
+                    rawLine.append(".");
+
+                    //Add rawLine to result.
+                    result.append(rawLine);
+                    result.append( "\n" );
+                }
             }
         }
 
@@ -146,7 +165,7 @@ public class WebResource
         return result.toString();
     }
     private String getWikipediaInfo() {
-        return getWikipediaInfo(0);
+        return getWikipediaInfo(3);
     }
 
     private String getExpandedRootPath(String dst) {
