@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SkyGazer</string>
-    <string name="title_map_view">Map</string>
-    <string name="title_sky_view">Sky</string>
+    <string name="title_map_view">Map Overlays</string>
+    <string name="title_sky_view">Sky View</string>
     <string name="title_settings">Settings</string>
 
     <string name="category_general_title">General</string>
