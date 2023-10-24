@@ -1,7 +1,14 @@
 package com.echo.skygazer.ui.map;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
+import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
+import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +34,9 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.RasterLayer;
+import com.mapbox.mapboxsdk.style.sources.RasterSource;
 
 import java.util.List;
 
@@ -37,6 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     private MapView mapView;
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
+    private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,10 +57,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
         MapViewModel dashboardViewModel = new ViewModelProvider(this).get(MapViewModel.class);
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         mapView = (MapView) root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -107,7 +116,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
                 public void onStyleLoaded(@NonNull Style style){
-                    enableLocationComponent(style);
+                    StyleLoaded(style);
                 }
             });
         }
@@ -116,10 +125,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         MapFragment.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/cpitre1/clo3tz2g000fd01oz015efa1i/draft"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                enableLocationComponent(style);
+                root.findViewById(R.id.lightPollutionToggle).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        toggleLightPollutionLayer();
+                    }
+                });
+                StyleLoaded(style);
             }
         });
     }
@@ -148,5 +163,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
+    }
+
+    public void StyleLoaded(@NonNull Style style) {
+        enableLocationComponent(style);
+    }
+
+    private void toggleLightPollutionLayer(){
+        mapboxMap.getStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                Layer layer = style.getLayer("vnl");
+                if(layer != null){
+                    if(VISIBLE.equals(layer.getVisibility().getValue())){
+                        layer.setProperties(visibility(NONE));
+                    } else {
+                        layer.setProperties(visibility(VISIBLE));
+                    }
+                }
+            }
+        });
     }
 }
