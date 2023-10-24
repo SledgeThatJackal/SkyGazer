@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +38,7 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
     private FragmentMapBinding binding;
+    /* Map Related Objects */
     private MapView mapView;
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
@@ -118,7 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         MapFragment.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/cpitre1/clo3tz2g000fd01oz015efa1i/draft"), new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/cpitre1/clo3tz2g000fd01oz015efa1i"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 root.findViewById(R.id.lightPollutionToggle).setOnClickListener(new View.OnClickListener() {
