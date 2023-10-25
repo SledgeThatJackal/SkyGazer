@@ -79,6 +79,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
