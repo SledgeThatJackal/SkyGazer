@@ -119,3 +119,12 @@ public class MainActivity extends AppCompatActivity {
                 .show();                                                    //Show alert window
     }
 }
+
+/*  Example code for retrieving a preference variable
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean value = pref.getBoolean("constellation_highlighting" , true);
+
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, String.valueOf(value), duration);
+        toast.show();
+ */
