@@ -1,37 +1,23 @@
 package com.echo.skygazer.ui.settings;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceFragmentCompat;
 
-import com.echo.skygazer.databinding.FragmentSettingsBinding;
+import com.echo.skygazer.R;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
-    private FragmentSettingsBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(SettingsViewModel.class);
-
-        binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+    @Override
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        // Grabs the settings and sets the preferences to those values
+        // Preferences are saved under skygazer_preferences.xml
+        setPreferencesFromResource(R.xml.preferences, rootKey);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }

@@ -3,4 +3,27 @@
     <string name="title_map_view">Map Overlays</string>
     <string name="title_sky_view">Sky View</string>
     <string name="title_settings">Settings</string>
+
+    <string name="category_general_title">General</string>
+    <string name="category_accessibility_title">Accessibility</string>
+
+    <string name="star_data_cache_title">Cache Data To Disk</string>
+    <string name="star_data_cache_summary">Turns on/off manual cache saves</string>
+
+    <string name="low_light_title">Low Light Mode</string>
+
+    <string name="info_advanced_title">Advanced Information</string>
+    <string name="info_advanced_summary">Displays the HYG ID number when looking at a star\'s information</string>
+
+    <string name="feedback_audio_title">Audio Feedback</string>
+    <string name="feedback_audio_summary">Tells you the name of a star when you click on it</string>
+
+    <string name="highlight_constellation_title">Constellation Highlighting</string>
+    <string name="highlight_constellation_summary">Highlights constellations when they are in view</string>
+
+    <string name="feedback_tactile_title">Vibrations</string>
+    <string name="feedback_tactile_summary">Makes device vibrate when a constellation comes into view</string>
+
+    <string name="notifications_celestial_title">Upcoming Celestial Notifications</string>
+    <string name="notifications_celestial_summary">Whenever there is an upcoming celestial event, you will be sent a notification</string>
 </resources>
