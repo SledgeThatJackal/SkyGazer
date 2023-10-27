@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.echo.skygazer.Main;
 import com.echo.skygazer.MainActivity;
+import com.echo.skygazer.ui.sky.SkyFragment;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +33,7 @@ public class WebResource
     //Downloaded data
     private ArrayList<String> dlData = new ArrayList<>();
     private int id;
+    private static String currentWikipediaText = "Loading...";
 
     /**
      * Gets a website URL "[src]" that the device can download from.
@@ -91,9 +93,20 @@ public class WebResource
             case 1234: {
                 //MainActivity ma = Main.getMainActivity();
                 //ma.[...]
-                
-                Main.log("This WebResource is a wikipedia article that says: "+getWikipediaInfo());
-            }
+
+                currentWikipediaText = getWikipediaInfo();
+                if(currentWikipediaText.trim().equals("")) {
+                    currentWikipediaText = "Sorry, no Wikipedia article for this star exists.";
+                }
+            } break;
+
+            //HYG database web resource. DO NOT create any other WebResources with ID==1000.
+            case 1000: {
+                HygDatabase.init(dlData);
+                Main.log("Initializing hyg-database handler (HygDatabase.java)");
+
+                HygDatabase.setStarsRandomly(SkyFragment.getSkyView(), 8);
+            } break;
         }
     }
 
@@ -106,8 +119,10 @@ public class WebResource
         return dlData.get(lineNum);
     }
 
+    /** @return Length of the ArrayList 'dlData' */
+    private int getLength() { return dlData.size(); }
+
     /**
-     * TODO: Get rid of all unnecessary elements to get the raw text.
      * If 'src' is a Wikipedia article, get the raw text of the top paragraphs.
      * @param numParagraphs Number of paragraphs to get the raw text of.
      * @return A large single string, with proper formatting.
@@ -165,8 +180,9 @@ public class WebResource
         return result.toString();
     }
     private String getWikipediaInfo() {
-        return getWikipediaInfo(3);
+        return getWikipediaInfo(1);
     }
+    public static String getCurrentWikipediaText() { return currentWikipediaText; }
 
     private String getExpandedRootPath(String dst) {
         return Main.getRootCachePath()+"/"+dst;

@@ -12,6 +12,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
+import com.echo.skygazer.io.HygDatabase;
+import com.echo.skygazer.ui.sky.SkyFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         navSectionId = NavSectionID.SKY;
                         //Hide upper title bar when displaying the sky
                         setSupportActionBarState(false);
+
                         break;
                     }
                     case "Settings": {

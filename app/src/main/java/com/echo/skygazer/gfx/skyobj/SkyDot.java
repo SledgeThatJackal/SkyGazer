@@ -20,31 +20,39 @@ public class SkyDot extends SkyObject
         this.screenY = screenY;
         this.displayName = displayName;
 
+        int a = Main.random.nextInt(256);
+        int b = Main.random.nextInt(256);
+        int c = Main.random.nextInt(256);
+        sizePx = 4+Main.random.nextInt(10);
+
+        color = Color.rgb( a, b, c );
     }
     public SkyDot(int screenX, int screenY) {
-        this( screenX, screenY,"Celestia "+String.valueOf(Main.random.nextInt(100000)) );
+        this( screenX, screenY,"Random Star "+String.valueOf(Main.random.nextInt(100000)) );
     }
     public SkyDot() {
         this( Main.random.nextInt(1000), Main.random.nextInt(1000) );
     }
 
     @Override
-    protected void draw(Canvas cs, Paint pt) {
+    protected void draw(Canvas cs, Paint pt, float tx, float ty) {
         //Outer circle
         pt.setColor(Color.WHITE);
-        cs.drawCircle(screenX, screenY, sizePx+1, pt);
+        cs.drawCircle(screenX+tx, screenY+ty, sizePx+1, pt);
         //Inner circle
         pt.setColor( color );
-        cs.drawCircle(screenX, screenY, sizePx, pt);
+        cs.drawCircle(screenX+tx, screenY+ty, sizePx, pt);
 
         pt.setColor(Color.WHITE);
         pt.setTextSize(50);
-        cs.drawText(displayName, screenX+sizePx, screenY+sizePx, pt);
+        cs.drawText(displayName, screenX+tx+sizePx, screenY+ty+sizePx, pt);
     }
 
     public float getScreenX() { return screenX; }
     public float getScreenY() { return screenY; }
+    public String getDisplayName() { return displayName; }
     public void setScreenX(float screenX) { this.screenX = screenX; }
     public void setScreenY(float screenY) { this.screenY = screenY; }
     public void setScreenXY(float screenX, float screenY) { setScreenX(screenX); setScreenY(screenY); }
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
 }

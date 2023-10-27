@@ -17,9 +17,9 @@ public class SkyLine extends SkyObject
     }
 
     @Override
-    protected void draw(Canvas cs, Paint pt) {
+    protected void draw(Canvas cs, Paint pt, float tx, float ty) {
         pt.setColor(Color.rgb(255, 200, 200) );
         pt.setStrokeWidth(4);
-        cs.drawLine( so1.getScreenX(), so1.getScreenY(), so2.getScreenX(), so2.getScreenY(), pt );
+        cs.drawLine( so1.getScreenX()+tx, so1.getScreenY()+ty, so2.getScreenX()+tx, so2.getScreenY()+ty, pt );
     }
 }
