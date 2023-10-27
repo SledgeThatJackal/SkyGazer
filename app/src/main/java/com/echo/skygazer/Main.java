@@ -2,6 +2,7 @@ package com.echo.skygazer;
 
 import android.util.Log;
 
+import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.WebResource;
 
 import java.io.File;
@@ -10,7 +11,7 @@ import java.util.Random;
 public class Main {
 
     /* Utility objects */
-    public static Random random = new Random(123456);
+    public static Random random = new Random(123458);
     /* Private class members */
     //MainActivity object
     private static MainActivity mActivity;
@@ -68,7 +69,7 @@ public class Main {
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/Sirius", "wiki/Sirius.html", 1234);
         wr.cache();
 
-        WebResource hyg = new WebResource("https://raw.githubusercontent.com/astronexus/HYG-Database/master/hyg/v3/hyg_v37.csv", "db/hyg.csv");
-        hyg.cache();
+        WebResource hygWR = new WebResource("https://raw.githubusercontent.com/astronexus/HYG-Database/master/hyg/v3/hyg_v37.csv", "db/hyg.csv", 1000);
+        hygWR.cache();
     }
 }
