@@ -1,8 +1,13 @@
 package com.echo.skygazer.io;
 
+import android.content.Context.*;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -87,10 +92,14 @@ public class HygDatabase {
 
         //Build database row text
         //ID can be found in constant time, so we are fine calling get() at 60 times a second.
-        pt.setColor(Color.BLUE);
-        String txtDbId = "Database Row ID: "+hygDictionary.get( sv.getSelectedSkyDot().getDisplayName() );
-        float txtDbIdW = pt.measureText(txtDbId);
-        cs.drawText(txtDbId, sw/2-txtDbIdW/2, sh-wMargin*2-140-32, pt);
+        Context context = sv.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if(sharedPreferences.getBoolean("advanced_info", false)) {
+            pt.setColor(Color.BLUE);
+            String txtDbId = "Database Row ID: " + hygDictionary.get(sv.getSelectedSkyDot().getDisplayName());
+            float txtDbIdW = pt.measureText(txtDbId);
+            cs.drawText(txtDbId, sw / 2 - txtDbIdW / 2, sh - wMargin * 2 - 140 - 32, pt);
+        }
 
         //Build "Close" text
         pt.setColor(Color.WHITE);
