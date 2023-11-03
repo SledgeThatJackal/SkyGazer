@@ -14,6 +14,6 @@ public class ConstellationViewHolder extends RecyclerView.ViewHolder {
 
     public ConstellationViewHolder(@NonNull View itemView) {
         super(itemView);
-        constellationName.findViewById(R.id.constellation_name);
+        constellationName = itemView.findViewById(R.id.constellation_name);
     }
 }
