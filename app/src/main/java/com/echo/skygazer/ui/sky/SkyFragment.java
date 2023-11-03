@@ -1,6 +1,7 @@
 package com.echo.skygazer.ui.sky;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.echo.skygazer.Main;
@@ -20,6 +22,9 @@ import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkyView;
 import com.echo.skygazer.io.HygDatabase;
 import com.google.android.material.sidesheet.SideSheetDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SkyFragment extends Fragment {
 
@@ -91,16 +96,26 @@ public class SkyFragment extends Fragment {
             rootLayout.addView(inflater.inflate(R.layout.constellation_side_view, null));
 
             // Place Holder Values
-            String[] visStrArr = {"Constellation A", "Constellation B", "Constellation C"};
-            String[] notStrArr = {"Constellation D", "Constellation E", "Constellation F"};
+            List<String> visStrList = new ArrayList<>();
+            visStrList.add("Constellation A");
+            visStrList.add("Constellation D");
+            visStrList.add("Constellation E");
+            visStrList.add("Constellation G");
+
+            List<String> notStrList = new ArrayList<>();
+            notStrList.add("Constellation B");
+            notStrList.add("Constellation C");
+            notStrList.add("Constellation F");
 
             // Visible Section
             RecyclerView visible = rootLayout.findViewById(R.id.visible_constellation_list);
-            visible.setAdapter(new ConstellationAdapter(this.getContext(), visStrArr));
+            visible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), visStrList));
+            visible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
             // Not Visible Section
             RecyclerView notVisible = rootLayout.findViewById(R.id.not_visible_constellation_list);
-            notVisible.setAdapter(new ConstellationAdapter(this.getContext(), notStrArr));
+            notVisible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), notStrList));
+            notVisible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
             sideSheetDialog.show();
         });

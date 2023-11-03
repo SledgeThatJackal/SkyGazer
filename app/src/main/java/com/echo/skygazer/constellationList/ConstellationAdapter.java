@@ -1,6 +1,7 @@
 package com.echo.skygazer.constellationList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,31 +11,35 @@ import com.echo.skygazer.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class ConstellationAdapter extends RecyclerView.Adapter<ConstellationViewHolder> {
 
-    Context context;
-    String[] constellations;
+    private final LayoutInflater inflater;
+    List<String> constellations;
 
-    public ConstellationAdapter(Context context, String[] constellations) {
-        this.context = context;
+    public ConstellationAdapter(Context context, List<String> constellations) {
+        inflater = LayoutInflater.from(context);
         this.constellations = constellations;
     }
 
     @NonNull
     @Override
     public ConstellationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.constellation_item_view, parent, false);
+        View view = inflater.inflate(R.layout.constellation_item_view, parent, false);
 
         return new ConstellationViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ConstellationViewHolder holder, int position) {
-        holder.constellationName.setText(constellations[position]);
+        Log.d("OnBindViewHolder", constellations.get(position));
+        holder.constellationName.setText(constellations.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return constellations.length;
+        Log.d("getItemCount", "List Length: " + constellations.size());
+        return constellations.size();
     }
 }
