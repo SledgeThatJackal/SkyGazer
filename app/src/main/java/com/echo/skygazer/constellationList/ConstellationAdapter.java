@@ -15,18 +15,18 @@ import java.util.List;
 
 public class ConstellationAdapter extends RecyclerView.Adapter<ConstellationViewHolder> {
 
-    private final LayoutInflater inflater;
+    private final LayoutInflater INFLATER;
     List<String> constellations;
 
     public ConstellationAdapter(Context context, List<String> constellations) {
-        inflater = LayoutInflater.from(context);
+        INFLATER = LayoutInflater.from(context);
         this.constellations = constellations;
     }
 
     @NonNull
     @Override
     public ConstellationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.constellation_item_view, parent, false);
+        View view = INFLATER.inflate(R.layout.constellation_item_view, parent, false);
 
         return new ConstellationViewHolder(view);
     }
