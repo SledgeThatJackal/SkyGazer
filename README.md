@@ -1,9 +1,7 @@
 # TeamEcho
-New features (as of 10/26)
-- Info Window when tapping on star
-- Info Window has wikipedia scraping and database row
-- Dragging screen around
-- Dots are just random stars for now - you can switch to another tab and switch back to get another random pool of "named stars" (~350 of them)
-
-https://github.com/SledgeThatJackal/SkyGazer/assets/112023193/4a4ce79c-c808-4ec9-b5fd-f6406e3b4a8b
-
+New features (as of 11/15)
+- 3D graphical view of stars
+- All named stars can be accessed
+- For now, the "default" location you are at is the north pole, which is why Polaris is right above you in the sky view. Actual geolocation will come soon.
+- Stars have different sizes depending on brightness
+- Wikipedia text should be cut off if they are too long
