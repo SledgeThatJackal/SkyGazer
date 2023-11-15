@@ -87,6 +87,7 @@
                         ["land-and-water", "land"],
                         ["land-and-water", "water"],
                         ["land-and-water", "built"],
+                        "cloudCover",
                         "vnl",
                         ["transit", "built"],
                         ["buildings", "built"],

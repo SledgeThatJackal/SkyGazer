@@ -6,18 +6,24 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentMapBinding;
 
+import com.google.android.material.navigation.NavigationView;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -35,7 +41,7 @@ import com.mapbox.mapboxsdk.style.layers.Layer;
 import java.util.List;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentMapBinding binding;
     /* Map Related Objects */
@@ -43,6 +49,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private View root;
+    private NavigationView settingsMenu;
+    private DrawerLayout drawerLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = getContext().getApplicationContext();
@@ -52,10 +60,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
         binding = FragmentMapBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-
+        settingsMenu = root.findViewById(R.id.mapDrawer);
+        drawerLayout = root.findViewById(R.id.map_fragment);
         mapView = (MapView) root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.open_map_settings, R.string.close_map_settings);
+        drawerLayout.addDrawerListener(toggle);
+        settingsMenu.setNavigationItemSelectedListener(this::onNavigationItemSelected);
+        toggle.syncState();
+
+        root.findViewById(R.id.mapDrawerOpen).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 
         return root;
     }
@@ -127,12 +148,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
         mapboxMap.setStyle(new Style.Builder().fromUri("asset://style.json"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                root.findViewById(R.id.lightPollutionToggle).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        toggleLightPollutionLayer();
-                    }
-                });
                 StyleLoaded(style);
             }
         });
@@ -166,6 +181,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
 
     public void StyleLoaded(@NonNull Style style) {
         enableLocationComponent(style);
+        toggleLightPollutionLayer();
+        toggleCloudCoverLayer();
     }
 
     private void toggleLightPollutionLayer(){
@@ -182,5 +199,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
                 }
             }
         });
+    }
+
+    private void toggleCloudCoverLayer(){
+        mapboxMap.getStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                Layer layer = style.getLayer("cloudCover");
+                if(layer != null){
+                    if(VISIBLE.equals(layer.getVisibility().getValue())){
+                        layer.setProperties(visibility(NONE));
+                    } else {
+                        layer.setProperties(visibility(VISIBLE));
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i("Navigation Item Select", item.getItemId()+"");
+        if(item.getItemId() == R.id.lightPollutionToggle){
+            toggleLightPollutionLayer();
+        }
+        if(item.getItemId() == R.id.cloudCoverToggle){
+            toggleCloudCoverLayer();
+        }
+        if(item.getItemId() == R.id.mapDrawerClose){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        return true;
     }
 }
