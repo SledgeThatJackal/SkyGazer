@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
         //Listener for app location change (Map, Sky, Settings)
         navController.addOnDestinationChangedListener(
             (thisNavCtrl, navDst, bundle) -> {
@@ -134,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
         boolean lowLightModeValue = pref.getBoolean("low_light_mode", false);
 
         if(lowLightModeValue){
-            theme.applyStyle(R.style.Theme_Low_Light_SkyGazer, true);
+            theme.applyStyle(R.style.Theme_LowLight, true);
         } else {
-            theme.applyStyle(R.style.Theme_SkyGazer, true);
+            theme.applyStyle(R.style.Theme_Default, true);
         }
 
         return theme;

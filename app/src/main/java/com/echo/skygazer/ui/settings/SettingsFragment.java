@@ -31,11 +31,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         lowLightPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener(){
             @Override
             public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-//                if((boolean) newValue){
-//                    requireContext().setTheme(R.style.Theme_Low_Light_SkyGazer);
-//                } else {
-//                    requireContext().setTheme(R.style.Theme_SkyGazer);
-//                }
                 return true;
             }
         });
