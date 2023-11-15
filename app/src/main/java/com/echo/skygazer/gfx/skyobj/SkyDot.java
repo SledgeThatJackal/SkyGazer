@@ -6,53 +6,64 @@ import android.graphics.Paint;
 
 import com.echo.skygazer.Main;
 import com.echo.skygazer.gfx.SkyObject;
+import com.echo.skygazer.gfx.SkyView3D;
+import com.echo.skygazer.gfx.math.Point3d;
+import com.echo.skygazer.io.HygDataRow;
 
 public class SkyDot extends SkyObject
 {
-    int color = Color.rgb(255, 200, 200);  //Color to render shape
-    float sizePx = 5;             //Size of circle in pixels
+    HygDataRow data = null;
+
     float screenX = 100;
     float screenY = 100;
+    boolean hasNegativeDepth = false;   //Whether this point is in the camera's inverted FOV (FOV behind the camera). If it is, we can't see it or click on it!
+    int color = Color.rgb(255, 200, 200);  //Color to render shape
+    float sizePx = 5;             //Size of circle in pixels
     String displayName = "null";
 
-    public SkyDot(float screenX, float screenY, String displayName) {
-        this.screenX = screenX;
-        this.screenY = screenY;
-        this.displayName = displayName;
+    public SkyDot(HygDataRow data) {
+        this.data = data;
 
-        int a = Main.random.nextInt(256);
-        int b = Main.random.nextInt(256);
-        int c = Main.random.nextInt(256);
-        sizePx = 4+Main.random.nextInt(10);
+        if(data.getProperName()==null) {
+            displayName = "";
+        } else {
+            displayName = data.getProperName();
+            color = Color.rgb(255, 255, 200);
+        }
 
-        color = Color.rgb( a, b, c );
+        sizePx = (float)data.getMag()/2.0f+2f;
     }
-    public SkyDot(int screenX, int screenY) {
-        this( screenX, screenY,"Random Star "+String.valueOf(Main.random.nextInt(100000)) );
-    }
+
     public SkyDot() {
-        this( Main.random.nextInt(1000), Main.random.nextInt(1000) );
+        this( new HygDataRow(-1, "Loading...", 0, 0, 0, 0) );
     }
 
     @Override
-    protected void draw(Canvas cs, Paint pt, float tx, float ty) {
+    public void draw(Canvas cs, Paint pt, SkyView3D sv3d) {
+        Point3d pp3d = sv3d.getProjectedPoint(data.getX(), data.getY(), data.getZ());
+        screenX = (float)pp3d.x;
+        screenY = (float)pp3d.y;
+        hasNegativeDepth = false;
+        if(pp3d.z<0) {
+            hasNegativeDepth = true;
+            return;
+        }
+
         //Outer circle
         pt.setColor(Color.WHITE);
-        cs.drawCircle(screenX+tx, screenY+ty, sizePx+1, pt);
+        cs.drawCircle(screenX, screenY, sizePx+1, pt);
         //Inner circle
         pt.setColor( color );
-        cs.drawCircle(screenX+tx, screenY+ty, sizePx, pt);
+        cs.drawCircle(screenX, screenY, sizePx, pt);
 
         pt.setColor(Color.WHITE);
+        pt.setTextSize(40);
+        cs.drawText(displayName, screenX+sizePx, screenY+sizePx, pt);
         pt.setTextSize(50);
-        cs.drawText(displayName, screenX+tx+sizePx, screenY+ty+sizePx, pt);
     }
 
+    public boolean hasNegativeDepth() { return hasNegativeDepth; }
     public float getScreenX() { return screenX; }
     public float getScreenY() { return screenY; }
     public String getDisplayName() { return displayName; }
-    public void setScreenX(float screenX) { this.screenX = screenX; }
-    public void setScreenY(float screenY) { this.screenY = screenY; }
-    public void setScreenXY(float screenX, float screenY) { setScreenX(screenX); setScreenY(screenY); }
-    public void setDisplayName(String displayName) { this.displayName = displayName; }
 }
