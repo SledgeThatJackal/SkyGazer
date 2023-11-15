@@ -124,7 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         MapFragment.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/cpitre1/clo3tz2g000fd01oz015efa1i"), new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(new Style.Builder().fromUri("asset://style.json"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 root.findViewById(R.id.lightPollutionToggle).setOnClickListener(new View.OnClickListener() {
