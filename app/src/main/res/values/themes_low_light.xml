@@ -1,17 +1,21 @@
 <resources>
-    <style name="Theme.Low_Light.SkyGazer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.LowLight" parent="Theme.AppCompat.Light">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/red_body</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorPrimaryVariant">@color/dark_red</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/light_red</item>
+        <item name="colorSecondaryVariant">@color/light_red</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/dark_red</item>
         <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/red_body</item>
-        <item name="android:background">#393939</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:colorAccent">@color/light_red</item>
+        <item name="android:textColor">@color/dark_red</item>
+        <item name="android:textColorSecondary">@color/red</item>
+        <item name="android:colorControlHighlight">@color/darkest_red</item>
+
     </style>
 </resources>
