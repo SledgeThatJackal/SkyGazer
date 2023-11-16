@@ -37,4 +37,7 @@
     <string name="constellation_visibility_description">An eye for seeing what constellations are visible.</string>
     <string name="not_visible">Not Visible:</string>
     <string name="currently_visible">Currently Visible:</string>
+    <string name="bottomSheetInfo">The Letter i</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
 </resources>

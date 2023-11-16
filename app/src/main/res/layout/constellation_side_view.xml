@@ -15,7 +15,7 @@
         android:paddingTop="10dp"
         android:text="@string/currently_visible"
         android:textSize="25sp"
-        android:textStyle="bold"></TextView>
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/visible_constellation_list"
@@ -31,7 +31,7 @@
         android:paddingTop="10dp"
         android:text="@string/not_visible"
         android:textSize="25sp"
-        android:textStyle="bold"></TextView>
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/not_visible_constellation_list"

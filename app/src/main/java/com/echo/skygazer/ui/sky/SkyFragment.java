@@ -1,5 +1,6 @@
 package com.echo.skygazer.ui.sky;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -9,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +26,7 @@ import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.sidesheet.SideSheetDialog;
 
 import java.util.ArrayList;
@@ -37,7 +41,7 @@ public class SkyFragment extends Fragment {
     private boolean dragging = false;
     private ImageButton constellationVisibilityButton;
     private SideSheetDialog sideSheetDialog;
-
+    private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,8 +55,12 @@ public class SkyFragment extends Fragment {
         sideSheetDialog = new SideSheetDialog(requireContext());
         sideSheetDialog.setContentView(R.layout.constellation_side_view);
 
+        // Bottom Sheet
+        bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+
         //Build SkySim, add to root layout, start draw thread.
-        skySim = new SkySimulation(getActivity());
+        skySim = new SkySimulation(getActivity(), bottomSheetDialog);
         rootLayout.addView(skySim);
         skySim.startDrawThread();
 
@@ -122,6 +130,24 @@ public class SkyFragment extends Fragment {
 
             // After gathering Constellations and populating RecyclerViews display the SideSheet
             sideSheetDialog.show();
+        });
+
+        bottomSheetDialog.findViewById(R.id.bottomSheetExpand).setOnClickListener(view -> {
+            bottomSheetDialog.findViewById(R.id.bottomSheetWikiText).setVisibility(View.VISIBLE);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            if(pref.getBoolean("advanced_info", false)){
+                bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId).setVisibility(View.VISIBLE);
+            }
+
+            bottomSheetDialog.findViewById(R.id.bottomSheetExpand).setVisibility(View.GONE);
+            bottomSheetDialog.findViewById(R.id.bottomSheetCollapse).setVisibility(View.VISIBLE);
+        });
+
+        bottomSheetDialog.findViewById(R.id.bottomSheetCollapse).setOnClickListener(view -> {
+            bottomSheetDialog.findViewById(R.id.bottomSheetWikiText).setVisibility(View.GONE);
+            bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId).setVisibility(View.GONE);
+            bottomSheetDialog.findViewById(R.id.bottomSheetExpand).setVisibility(View.VISIBLE);
+            bottomSheetDialog.findViewById(R.id.bottomSheetCollapse).setVisibility(View.GONE);
         });
 
         return rootView;

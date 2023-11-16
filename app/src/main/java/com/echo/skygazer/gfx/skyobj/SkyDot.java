@@ -65,5 +65,10 @@ public class SkyDot extends SkyObject
     public boolean hasNegativeDepth() { return hasNegativeDepth; }
     public float getScreenX() { return screenX; }
     public float getScreenY() { return screenY; }
-    public String getDisplayName() { return displayName; }
+    public String getDisplayName() {
+        if(displayName == null){
+            return "Loading...";
+        }
+        return displayName;
+    }
 }
