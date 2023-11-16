@@ -84,17 +84,7 @@ public class SkySimulation extends SurfaceView implements Runnable
     }
 
     public void doTapAt(float tapX, float tapY) {
-        //If we clicked OUTSIDE a window (outside + close "button")
-        if( showingWindow ) {
-            boolean tappedWindow =
-                tapX>=InfoView.wMargin && tapX<=width-InfoView.wMargin &&
-                tapY>=InfoView.wMargin && tapY<=height-InfoView.wMargin*2-140;
-            if(!tappedWindow) {
-                showingWindow = false;
-            }
-        }
-
-        //Also, we need to find the closest star being tapped in case the tap is within the radius of multiple stars
+        //We need to find the closest star being tapped in case the tap is within the radius of multiple stars
         boolean foundSkyDot = false;
         int closestSkyDotID = -123456789;   //Will be unchanged if foundSkyDot stays false
         double minimumDistance = 999999;    //Will be unchanged if foundSkyDot stays false
