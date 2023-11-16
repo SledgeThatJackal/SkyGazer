@@ -6,17 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.map.MapFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        app:mapbox_cameraTargetLat="35.2271"
+        app:mapbox_cameraTargetLng="-80.8431"
+        app:mapbox_cameraZoom="9.0"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/lightPollutionToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_margin="30dp"
+            android:src="@android:drawable/ic_menu_view"
+            app:backgroundTint="#9C27B0"
+            app:rippleColor="#9C27B0" />
+    </com.mapbox.mapboxsdk.maps.MapView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

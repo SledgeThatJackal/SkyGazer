@@ -1,15 +1,18 @@
 package com.echo.skygazer.io;
 
-<<<<<<< Updated upstream
+import android.content.Context.*;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 
-=======
->>>>>>> Stashed changes
 import com.echo.skygazer.Main;
 import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
@@ -81,7 +84,6 @@ public class HygDatabase {
         }
     }
 
-<<<<<<< Updated upstream
     public static void drawDataWindow(SkyView sv, Canvas cs, Paint pt, float sw, float sh) {
         //Outer
         pt.setColor(Color.rgb(0, 80, 255));
@@ -101,10 +103,14 @@ public class HygDatabase {
 
         //Build database row text
         //ID can be found in constant time, so we are fine calling get() at 60 times a second.
-        pt.setColor(Color.BLUE);
-        String txtDbId = "Database Row ID: "+hygDictionary.get( sv.getSelectedSkyDot().getDisplayName() );
-        float txtDbIdW = pt.measureText(txtDbId);
-        cs.drawText(txtDbId, sw/2-txtDbIdW/2, sh-wMargin*2-140-32, pt);
+        Context context = sv.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if(sharedPreferences.getBoolean("advanced_info", false)) {
+            pt.setColor(Color.BLUE);
+            String txtDbId = "Database Row ID: " + hygDictionary.get(sv.getSelectedSkyDot().getDisplayName());
+            float txtDbIdW = pt.measureText(txtDbId);
+            cs.drawText(txtDbId, sw / 2 - txtDbIdW / 2, sh - wMargin * 2 - 140 - 32, pt);
+        }
 
         //Build "Close" text
         pt.setColor(Color.WHITE);
@@ -133,9 +139,9 @@ public class HygDatabase {
         float txtW = pt.measureText(txt);
         cs.drawText(txt, sw/2-txtW/2, sh-navbarHeight+64, pt);
         //cs.drawText();
-=======
+    }
+
     public static boolean isInitialized() { return initialized; }
->>>>>>> Stashed changes
 
     public static HygDataRow getSelectedHygData() {
         return selectedHygData;
