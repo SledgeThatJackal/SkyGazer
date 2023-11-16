@@ -2,25 +2,33 @@ package com.echo.skygazer;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.ui.sky.SkyFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     //Progress Dialog
     public static final int PROGRESS_BAR_TYPE = 0;
 
     private ActivityMainBinding binding;
+
     public enum NavSectionID { MAP, SKY, SETTINGS, UNKNOWN }
     private NavSectionID navSectionId = NavSectionID.UNKNOWN;
 
@@ -59,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         //Set content view
         setContentView(rootView);
 
+        // Create Shared Preference Manager to listen for theme change
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
         // Create functional bottom navbar with 'map_view', 'sky_view', 'settings'
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
             R.id.map_view, R.id.sky_view, R.id.settings
@@ -66,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
         //Listener for app location change (Map, Sky, Settings)
         navController.addOnDestinationChangedListener(
             (thisNavCtrl, navDst, bundle) -> {
@@ -121,11 +131,34 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", null)                  //No button
                 .show();                                                    //Show alert window
     }
+
+    @Override
+    public Resources.Theme getTheme(){
+        Resources.Theme theme = super.getTheme();
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean lowLightModeValue = pref.getBoolean("low_light_mode", false);
+
+        if(lowLightModeValue){
+            theme.applyStyle(R.style.Theme_LowLight, true);
+        } else {
+            theme.applyStyle(R.style.Theme_Default, true);
+        }
+
+        return theme;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if(s.equals("low_light_mode")){
+            recreate();
+        }
+    }
 }
 
 /*  Example code for retrieving a preference variable
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean value = pref.getBoolean("constellation_highlighting" , true);
+        boolean value = pref.getBoolean("constellation_highlighting", true);
 
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(this, String.valueOf(value), duration);

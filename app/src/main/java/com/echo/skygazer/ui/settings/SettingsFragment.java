@@ -4,11 +4,9 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
-
 import com.echo.skygazer.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         // Grabs the settings and sets the preferences to those values
