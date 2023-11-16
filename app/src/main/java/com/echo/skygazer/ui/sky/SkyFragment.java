@@ -20,6 +20,7 @@ import com.echo.skygazer.R;
 import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkyView;
+import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.io.HygDatabase;
 import com.google.android.material.sidesheet.SideSheetDialog;
 
@@ -44,9 +45,8 @@ public class SkyFragment extends Fragment {
         constellationVisibilityButton = (ImageButton) rootView.findViewById(R.id.constellation_visible_button);
 
         // Initialize side sheet that displays the currently visible constellations
-        SideSheetDialog sideSheetDialog = new SideSheetDialog(requireContext());
+        sideSheetDialog = new SideSheetDialog(requireContext());
         sideSheetDialog.setContentView(R.layout.constellation_side_view);
-
 
         //Build SkyDrawing, add to root layout, start draw thread.
         skyView = new SkyView(getActivity());
@@ -93,7 +93,8 @@ public class SkyFragment extends Fragment {
 
         // Create side sheet when the eye button is touched
         constellationVisibilityButton.setOnClickListener(view -> {
-            rootLayout.addView(inflater.inflate(R.layout.constellation_side_view, null));
+            Constellations constellations = new Constellations();
+            Log.d("Constellations", constellations.toString());
 
             // Place Holder Values
             List<String> visStrList = new ArrayList<>();
@@ -108,14 +109,20 @@ public class SkyFragment extends Fragment {
             notStrList.add("Constellation F");
 
             // Visible Section
-            RecyclerView visible = rootLayout.findViewById(R.id.visible_constellation_list);
-            visible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), visStrList));
-            visible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+            RecyclerView visible = sideSheetDialog.findViewById(R.id.visible_constellation_list);
+            Log.d("RecyclerView", visible.toString());
+            LinearLayoutManager visibleLayoutManger = new LinearLayoutManager(getActivity().getApplicationContext());
+            Log.d("LayoutManager", visibleLayoutManger.toString());
+            visible.setLayoutManager(visibleLayoutManger);
+
+            ConstellationAdapter constellationAdapter = new ConstellationAdapter(getActivity().getApplicationContext(), visStrList);
+            Log.d("ConstellationAdapter", constellationAdapter.toString());
+            visible.setAdapter(constellationAdapter);
 
             // Not Visible Section
-            RecyclerView notVisible = rootLayout.findViewById(R.id.not_visible_constellation_list);
-            notVisible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), notStrList));
+            RecyclerView notVisible = sideSheetDialog.findViewById(R.id.not_visible_constellation_list);
             notVisible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+            notVisible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), notStrList));
 
             sideSheetDialog.show();
         });
