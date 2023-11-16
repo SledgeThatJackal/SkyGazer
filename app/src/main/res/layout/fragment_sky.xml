@@ -22,7 +22,6 @@
             android:layout_margin="16dp"
             android:background="#00FFFFFF"
             android:contentDescription="@string/constellation_visibility_description"
-            app:backgroundTint="#434343"
             app:srcCompat="@drawable/visible_constellation_icon" />
     </LinearLayout>
 
