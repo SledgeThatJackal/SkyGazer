@@ -4,34 +4,25 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpecificConstellation {
-    private int constellationID;
-    private String constellationName;
-    private int[] link;
+    private final int CONSTELLATION_ID;
+    private final String CONSTELLATION_NAME;
+    private final int[] LINK;
 
-    public SpecificConstellation(int constellationID, String constellationName, int[] link) {
-        this.constellationID = constellationID;
-        this.constellationName = constellationName;
-        this.link = link;
+    public SpecificConstellation(int CONSTELLATION_ID, String CONSTELLATION_NAME, int[] LINK) {
+        this.CONSTELLATION_ID = CONSTELLATION_ID;
+        this.CONSTELLATION_NAME = CONSTELLATION_NAME;
+        this.LINK = LINK;
     }
 
     public int getConstellationID() {
-        return constellationID;
+        return CONSTELLATION_ID;
     }
 
     public String getConstellationName() {
-        return constellationName;
+        return CONSTELLATION_NAME;
     }
 
     public int[] getLink() {
-        return link;
-    }
-
-    @Override
-    public String toString() {
-        return "SpecificConstellation{" +
-                "constellationID=" + constellationID +
-                ", constellationName='" + constellationName + '\'' +
-                ", link=" + Arrays.toString(link) +
-                '}';
+        return LINK;
     }
 }
