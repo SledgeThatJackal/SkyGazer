@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.echo.skygazer.Main;
@@ -24,10 +25,28 @@ public class SkyFragment extends Fragment {
     private float lastDragY = 0;
     private boolean dragging = false;
     private static SkyView skyView = null;
+    private static SearchView searchView = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
         LinearLayout rootLayout = rootView.findViewById(R.id.sky_view);
+
+        //find the searchView from the layout
+        searchView = rootView.findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
+
 
         //Build SkyDrawing, add to root layout, start draw thread.
         skyView = new SkyView(getActivity());
@@ -76,6 +95,10 @@ public class SkyFragment extends Fragment {
     }
 
     public static SkyView getSkyView() { return skyView; }
+
+    public void performSearch(String query){
+
+    }
 
     @Override
     public void onDestroyView() {
