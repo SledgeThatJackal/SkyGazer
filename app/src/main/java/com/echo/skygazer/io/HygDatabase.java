@@ -44,13 +44,15 @@ public class HygDatabase {
                 //Get components
                 int id = 0;         //Get ID (id)
                 String properName = "Error";
+                double dist = 0.0;
                 double mag = 0.0;
                 double x = 0.0;     //Get x
                 double y = 0.0;     //Get y
                 double z = 0.0;     //Get z
                 try {
                     id = Integer.parseInt(rowComponents[0]);
-                    properName = rowComponents[6];
+                    properName = rowComponents[6].trim();
+                    dist = Double.parseDouble(rowComponents[9]);
                     mag = Double.parseDouble(rowComponents[13]);
                     x = Double.parseDouble(rowComponents[17]);
                     y = Double.parseDouble(rowComponents[18]);
@@ -63,9 +65,9 @@ public class HygDatabase {
                 //Build data row
                 if(!properName.equals("")) {
                     //Put proper name in data row if it exists
-                    hygMap.put( id, new HygDataRow(id, properName, mag, x, y, z) );
+                    hygMap.put( id, new HygDataRow(id, properName, dist, mag, x, y, z) );
                 } else {
-                    hygMap.put( id, new HygDataRow(id, null, mag, x, y, z) );
+                    hygMap.put( id, new HygDataRow(id, null, dist, mag, x, y, z) );
                 }
             }
 

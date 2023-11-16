@@ -1,23 +1,16 @@
 package com.echo.skygazer.gfx;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
-import androidx.preference.PreferenceManager;
-
 import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
-import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.WebResource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
-import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,31 +68,23 @@ public class SkySimulation extends SurfaceView implements Runnable
         skyView.setWH((int)width, (int)height);
         skyView.draw(canvas, paint, skyObjects);
 
-        //Window
-        if(showingWindow) {
-            InfoView.drawDataWindow(this, canvas, paint, width, height);
-        }
+        TextView wiki = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
+        if(wiki!=null) {
+            SkyDot sd = getSelectedSkyDot();
+            String basics = "Loading...\n\n";
+            if(sd!=null) {
+                basics = sd.toUserString();
+            }
 
-        //Star preview tab
-        if(showingPreviewTab) {
-            InfoView.drawDataPreviewTab(this, canvas, paint, width, height);
+            String wikiText = basics+WebResource.getCurrentWikipediaText();
+            wiki.setText(wikiText);
         }
 
         timer++;
     }
 
     public void doTapAt(float tapX, float tapY) {
-        //If we clicked OUTSIDE a window (outside + close "button")
-        if( showingWindow ) {
-            boolean tappedWindow =
-                tapX>=InfoView.wMargin && tapX<=width-InfoView.wMargin &&
-                tapY>=InfoView.wMargin && tapY<=height-InfoView.wMargin*2-140;
-            if(!tappedWindow) {
-                showingWindow = false;
-            }
-        }
-
-        //Also, we need to find the closest star being tapped in case the tap is within the radius of multiple stars
+        //We need to find the closest star being tapped in case the tap is within the radius of multiple stars
         boolean foundSkyDot = false;
         int closestSkyDotID = -123456789;   //Will be unchanged if foundSkyDot stays false
         double minimumDistance = 999999;    //Will be unchanged if foundSkyDot stays false
@@ -128,17 +113,9 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         //If we found SkyDot(s)
-        if(!showingPreviewTab && !showingWindow && foundSkyDot) {
+        if(foundSkyDot) {
             selectedSkyDotId = closestSkyDotID;
             showPreviewTab(getSkyDot(selectedSkyDotId).getDisplayName());
-//            TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
-//            header.setText(getSkyDot(selectedSkyDotId).getDisplayName());
-//
-//            TextView body = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
-//            body.setText(WebResource.getCurrentWikipediaText());
-//
-//            TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
-//            dbID.setText(selectedSkyDotId);
         }
     }
 
@@ -233,15 +210,21 @@ public class SkySimulation extends SurfaceView implements Runnable
         return getSkyDot(selectedSkyDotId);
     }
 
-    private void showWindow() {
-        showingWindow = true;
-        showingPreviewTab = false;
-    }
-
     private void showPreviewTab(String starName) {
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
+
+        TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
+        String name = getSkyDot(selectedSkyDotId).getDisplayName();
+        if(header!=null) {
+            header.setText(name);
+        }
+
+        TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
+        if(dbID!=null) {
+            String idText = "HYG database ID: "+selectedSkyDotId;
+            dbID.setText(idText);
+        }
+
         bottomSheetDialog.show();
-        showingWindow = false;
-        showingPreviewTab = true;
     }
 }
