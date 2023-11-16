@@ -22,10 +22,12 @@ import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkyView;
 import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.io.HygDatabase;
+import com.echo.skygazer.io.SpecificConstellation;
 import com.google.android.material.sidesheet.SideSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SkyFragment extends Fragment {
 
@@ -96,16 +98,16 @@ public class SkyFragment extends Fragment {
             Constellations constellations = new Constellations();
 
             // Place Holder Values
+            int i = 0;
             List<String> visStrList = new ArrayList<>();
-            visStrList.add("Constellation A");
-            visStrList.add("Constellation D");
-            visStrList.add("Constellation E");
-            visStrList.add("Constellation G");
-
             List<String> notStrList = new ArrayList<>();
-            notStrList.add("Constellation B");
-            notStrList.add("Constellation C");
-            notStrList.add("Constellation F");
+            for(Map.Entry<Integer, SpecificConstellation> currEntry: constellations.getConstellations().entrySet()){
+                if(currEntry.getKey() % 2 == 0){
+                    visStrList.add(currEntry.getValue().getConstellationName());
+                } else {
+                    notStrList.add(currEntry.getValue().getConstellationName());
+                }
+            }
 
             // Visible Section
             RecyclerView visible = sideSheetDialog.findViewById(R.id.visible_constellation_list);
