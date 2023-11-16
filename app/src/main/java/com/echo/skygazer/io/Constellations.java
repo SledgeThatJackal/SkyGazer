@@ -60,7 +60,7 @@ public class Constellations {
     }
 
     // NOTE: The return type on this is a List because there are some Constellations that have duplicate stars
-    public List<SpecificConstellation> getConstellationFromStarId(int starId){
+    public List<SpecificConstellation> getConstellationsFromStarId(int starId){
         List<SpecificConstellation> starConstellation = new ArrayList<>();
 
         for(Map.Entry<Integer, SpecificConstellation> currEntry: constellations.entrySet()){
