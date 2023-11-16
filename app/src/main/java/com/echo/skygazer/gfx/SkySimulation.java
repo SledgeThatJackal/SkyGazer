@@ -1,16 +1,23 @@
 package com.echo.skygazer.gfx;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
+import androidx.preference.PreferenceManager;
+
+import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.WebResource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,13 +28,12 @@ public class SkySimulation extends SurfaceView implements Runnable
 {
     private Thread thread;
     private boolean running = false;
-    private boolean showingWindow = false;
-    private boolean showingPreviewTab = false;
     private float width = 0;
     private float height = 0;
     private int selectedSkyDotId = -123456789;
 
     private static SkyView3D skyView;
+    private BottomSheetDialog bottomSheetDialog;
 
     /**
      * This is a (key, value) list.
@@ -40,8 +46,9 @@ public class SkySimulation extends SurfaceView implements Runnable
     Paint paint = new Paint();
     float timer = 0;
 
-    public SkySimulation(Context context) {
+    public SkySimulation(Context context, BottomSheetDialog bottomSheetDialog) {
         super(context);
+        this.bottomSheetDialog = bottomSheetDialog;
         setWillNotDraw(false);
 
         skyView = new SkyView3D(getWidth(), getHeight());
@@ -66,51 +73,17 @@ public class SkySimulation extends SurfaceView implements Runnable
         skyView.setWH((int)width, (int)height);
         skyView.draw(canvas, paint, skyObjects);
 
-        //Window
-        if(showingWindow) {
-            InfoView.drawDataWindow(this, canvas, paint, width, height);
-        }
-
-        //Star preview tab
-        if(showingPreviewTab) {
-            InfoView.drawDataPreviewTab(this, canvas, paint, width, height);
+        //Update wikipedia text
+        TextView body = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
+        if(body!=null) {
+            body.setText(WebResource.getCurrentWikipediaText());
         }
 
         timer++;
     }
 
     public void doTapAt(float tapX, float tapY) {
-        //Go through all objects and see if it is being tapped
-
-        //If we are showing a preview tab
-        if( showingPreviewTab ) {
-            boolean tappedPreview =
-                tapX>=width/2-InfoView.ptWidth/2 && tapX<=width/2+InfoView.ptWidth/2 &&
-                tapY>=height-InfoView.navbarHeight && tapY<=height-InfoView.navbarHeight+InfoView.ptHeight;
-
-            //If we tapped on a preview tab
-            if(tappedPreview) {
-                String starName = getSkyDot(selectedSkyDotId).getDisplayName();
-                HygDatabase.selectRow(starName);
-                WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
-                showWindow();
-                return;
-            } else {
-                showingPreviewTab = false;
-            }
-        }
-
-        //If we clicked OUTSIDE a window (outside + close "button")
-        if( showingWindow ) {
-            boolean tappedWindow =
-                tapX>=InfoView.wMargin && tapX<=width-InfoView.wMargin &&
-                tapY>=InfoView.wMargin && tapY<=height-InfoView.wMargin*2-140;
-            if(!tappedWindow) {
-                showingWindow = false;
-            }
-        }
-
-        //Also, we need to find the closest star being tapped in case the tap is within the radius of multiple stars
+        //We need to find the closest star being tapped in case the tap is within the radius of multiple stars
         boolean foundSkyDot = false;
         int closestSkyDotID = -123456789;   //Will be unchanged if foundSkyDot stays false
         double minimumDistance = 999999;    //Will be unchanged if foundSkyDot stays false
@@ -139,14 +112,15 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         //If we found SkyDot(s)
-        if(!showingPreviewTab && !showingWindow && foundSkyDot) {
+        if(foundSkyDot) {
             selectedSkyDotId = closestSkyDotID;
-            showPreviewTab();
+
+            showPreviewTab(getSkyDot(selectedSkyDotId).getDisplayName());
         }
     }
 
     public void doDragAt(float dragX, float dragY) {
-        skyView.rotate(dragX, dragY);
+        skyView.translate(dragX, dragY);
     }
 
     public void startDrawThread() {
@@ -236,13 +210,21 @@ public class SkySimulation extends SurfaceView implements Runnable
         return getSkyDot(selectedSkyDotId);
     }
 
-    private void showWindow() {
-        showingWindow = true;
-        showingPreviewTab = false;
-    }
+    private void showPreviewTab(String starName) {
+        WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
 
-    private void showPreviewTab() {
-        showingWindow = false;
-        showingPreviewTab = true;
+        TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
+        String name = getSkyDot(selectedSkyDotId).getDisplayName();
+        if(header!=null) {
+            header.setText(name);
+        }
+
+        TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
+        if(dbID!=null) {
+            String idText = "ID: "+selectedSkyDotId;
+            dbID.setText(idText);
+        }
+
+        bottomSheetDialog.show();
     }
 }
