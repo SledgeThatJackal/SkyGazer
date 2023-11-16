@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <style name="Theme.LowLight" parent="Theme.AppCompat.Light">
+    <style name="Theme.LowLight" parent="Theme.Material3.Dark">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryVariant">@color/dark_red</item>
@@ -12,10 +14,34 @@
         <item name="android:statusBarColor">@color/dark_red</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/black</item>
-        <item name="android:colorAccent">@color/light_red</item>
-        <item name="android:textColor">@color/dark_red</item>
-        <item name="android:textColorSecondary">@color/red</item>
+        <item name="android:colorAccent">@color/red</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textColorSecondary">@color/light_red</item>
         <item name="android:colorControlHighlight">@color/darkest_red</item>
+        <item name="sideSheetDialogTheme">@style/ThemeOverlay.App.SideSheetDialog.Low</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView.Low</item>
+        <item name="preferenceTheme">@style/AppPreferenceThemeOverlay.Low</item>
+        <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton.Low</item>
+        <item name="materialSwitchStyle">@style/Widget.App.Switch.Low</item>
+    </style>
 
+    <style name="ThemeOverlay.App.SideSheetDialog.Low" parent="ThemeOverlay.Material3.SideSheetDialog">
+        <item name="sideSheetModalStyle">@style/Widget.App.SideSheet.Modal.Low</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView.Low" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView.Low</item>
+    </style>
+
+    <style name="AppPreferenceThemeOverlay.Low" parent="@style/PreferenceThemeOverlay">
+        <item name ="switchPreferenceCompatStyle">@style/AppSwitchPreference.Low</item>
+    </style>
+
+    <style name="Widget.App.FloatingActionButton.Low" parent="Widget.Material3.FloatingActionButton.Small.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton.Low</item>
+    </style>
+
+    <style name="Widget.App.Switch.Low" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch.Low</item>
     </style>
 </resources>
