@@ -35,7 +35,7 @@ public class SkyDot extends SkyObject
     }
 
     public SkyDot() {
-        this( new HygDataRow(-1, "Loading...", 0, 0, 0, 0) );
+        this( new HygDataRow(-1, "Loading...", 0, 0, 0, 0, 0) );
     }
 
     @Override
@@ -70,5 +70,11 @@ public class SkyDot extends SkyObject
             return "Loading...";
         }
         return displayName;
+    }
+    public String toUserString() {
+        return
+            "Apparent magnitude: "+data.getMag()+"\n"+
+            "Equatorial coordinates: "+data.getX()+", "+data.getY()+", "+data.getZ()+"\n"+
+            "Distance: "+data.getDist()+" parsecs\n\n";
     }
 }

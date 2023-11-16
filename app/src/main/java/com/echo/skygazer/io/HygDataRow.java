@@ -25,6 +25,11 @@ public class HygDataRow
     //More useful fields: (relative magnitutde, luminosity, etc etc)
 
     /**
+     * Column 10: Distance to Earth, in light years.
+     */
+    private double dist = 0.0;
+
+    /**
      * Column 14: Apparent visual magnitude: How bright the star appears from Earth. In SkyGazer this determines the radius of the sky dot that makes up the star.
      */
     private double mag = 0.0;
@@ -39,11 +44,12 @@ public class HygDataRow
     /**
      *
      */
-    public HygDataRow(int id, String properName, double mag, double x, double y, double z) {
+    public HygDataRow(int id, String properName, double dist, double mag, double x, double y, double z) {
         this.id = id;
         this.properName = properName;
         //this.rightAscension = ra;
         //this.declination = dec;
+        this.dist = dist;
         this.mag = mag;
         this.x = x;
         this.y = y;
@@ -52,6 +58,7 @@ public class HygDataRow
 
     public int getId() { return id; }
     public String getProperName() { return properName; }
+    public double getDist() { return dist; }
     public double getMag() { return mag; }
     public double getX() { return x; };
     public double getY() { return y; };
