@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.io.HygDatabase;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class SkyFragment extends Fragment {
 
@@ -49,16 +51,19 @@ public class SkyFragment extends Fragment {
                 float y = motionEvent.getY();
 
                 switch (action & MotionEvent.ACTION_MASK) {
+                    /* User touches screen */
                     case MotionEvent.ACTION_DOWN: {
                         Main.log( "Touched screen @ ("+x+", "+y+")" );
                         rootView.performClick();
                         skySim.doTapAt(x, y);
                     } break;
+                    /* User releases screen */
                     case MotionEvent.ACTION_UP: {
                         lastDragX = 0;
                         lastDragY = 0;
                         dragging = false;
                     } break;
+                    /* User drags screen */
                     case MotionEvent.ACTION_MOVE: {
                         if(dragging) {
                             skySim.doDragAt(x-lastDragX, y-lastDragY);
@@ -67,6 +72,7 @@ public class SkyFragment extends Fragment {
                         lastDragY = y;
                         dragging = true;
                     } break;
+                    
                 }
                 return true;
             }

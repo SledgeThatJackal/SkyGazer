@@ -34,26 +34,30 @@ public class SkyView3D
         this.height = height;
     }
 
+    private void clampYawPitch()
+    {
+        if(pitch>180) {
+            pitch = 180;
+        }
+        if(pitch<0) {
+            pitch = 0;
+        }
+
+        while(yaw<0d) {
+            yaw += 360d;
+        }
+        while(yaw>360d) {
+            yaw -= 360d;
+        }
+    }
+
     public void draw(Canvas cs, Paint pt, Map<Integer, SkyObject> skyObjects)
     {
         timer+=1.0d;
 
-        //Pitch cannot move past straight above (180) or straight below (-180)
-        if( pitch>180d ) {
-            pitch = 180d;
-        }
-        if( pitch<0 ) {
-            pitch = 0;
-        }
-
-        //Update rotation matrices based on time, pitch, and yaw
-        double theta = timer*0.1;
-        double pmScreenSize = height;
-        projMatrix.setToProjectionMatrix((int)pmScreenSize, (int)pmScreenSize);     //Set width and height equal, for aspect ratio = 1
-        xRotMatrix.setToXRotationMatrix(pitch*Math.PI/180.0);
-        yRotMatrix.setToYRotationMatrix(timer*Math.PI/180.0);
-        yRotMatrix.setToYRotationMatrix(0);
-        zRotMatrix.setToZRotationMatrix(yaw*Math.PI/180.0);
+        //Pitch can't go past straight above, straight down
+        //Yaw must stay within 0-359.99 degrees
+        clampYawPitch();
 
         //Background
         pt.setColor(Color.rgb(21, 22, 48));
@@ -87,24 +91,37 @@ public class SkyView3D
 
     public Point3d getProjectedPoint(Point3d p1)
     {
-        //Create rotated points based of of initial point
+        //Initialize projection and rotation matrices.
+        double theta = timer*0.1;
+        double pmScreenSize = height;
+        projMatrix.setToProjectionMatrix((int)pmScreenSize, (int)pmScreenSize);     //Set width and height equal, for aspect ratio = 1
+        xRotMatrix.setToXRotationMatrix(pitch*Math.PI/180.0);
+        yRotMatrix.setToYRotationMatrix(timer*Math.PI/180.0);
+        yRotMatrix.setToYRotationMatrix(0);
+        zRotMatrix.setToZRotationMatrix(yaw*Math.PI/180.0);
+
+        //Create rotated points based off of initial point p1
         Point3d pRZ = Matrix4d.multiply3d(p1, zRotMatrix);      //Rotate about z axis
         Point3d pRYZ = Matrix4d.multiply3d(pRZ, yRotMatrix);    //Rotate about y axis
         Point3d pRXYZ = Matrix4d.multiply3d(pRYZ, xRotMatrix);  //Rotate about x axis
 
-        //Get translated point
+        //Do some more rotations...
+
+
+        //Get translated point (we may never need to do this in the actual app)
         Point3d pT = new Point3d(pRXYZ);
         //pT.x += 123.0f;
         //pT.y +=-456.0f;
         //pT.z += 300.0f;
 
-        //Get projected point
+        //Get projected point 3D -> 2D screen
         Point3d pTP = Matrix4d.multiply3d(pT, projMatrix);
 
         //Scale into view
         pTP.x += 0.5d; pTP.x *= (0.5d*(double)height);
         pTP.y += 1d; pTP.y *= (0.5d*(double)height);// pTP.y += (double)width/2d;
 
+        //Return transformed point
         return new Point3d(pTP.x, pTP.y, pT.z);
     }
 
@@ -113,7 +130,7 @@ public class SkyView3D
         return getProjectedPoint(new Point3d(x, y, z));
     }
 
-    public void translate(float x, float y)
+    public void rotate(float x, float y)
     {
         yaw += -x/10;
         pitch += -y/10;

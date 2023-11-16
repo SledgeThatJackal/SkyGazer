@@ -10,6 +10,7 @@ import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.WebResource;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,11 +82,13 @@ public class SkySimulation extends SurfaceView implements Runnable
     public void doTapAt(float tapX, float tapY) {
         //Go through all objects and see if it is being tapped
 
-        //If we clicked on a preview tab
+        //If we are showing a preview tab
         if( showingPreviewTab ) {
             boolean tappedPreview =
                 tapX>=width/2-InfoView.ptWidth/2 && tapX<=width/2+InfoView.ptWidth/2 &&
                 tapY>=height-InfoView.navbarHeight && tapY<=height-InfoView.navbarHeight+InfoView.ptHeight;
+
+            //If we tapped on a preview tab
             if(tappedPreview) {
                 String starName = getSkyDot(selectedSkyDotId).getDisplayName();
                 HygDatabase.selectRow(starName);
@@ -143,7 +146,7 @@ public class SkySimulation extends SurfaceView implements Runnable
     }
 
     public void doDragAt(float dragX, float dragY) {
-        skyView.translate(dragX, dragY);
+        skyView.rotate(dragX, dragY);
     }
 
     public void startDrawThread() {

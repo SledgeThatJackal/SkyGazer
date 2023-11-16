@@ -31,7 +31,8 @@ public class SkyDot extends SkyObject
             color = Color.rgb(255, 255, 200);
         }
 
-        sizePx = (float)data.getMag()/2.0f+2f;
+        sizePx = (float)(1d/data.getMag())*4.0f+1f;
+        if(sizePx>6) sizePx = 6;
     }
 
     public SkyDot() {

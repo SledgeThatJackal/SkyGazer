@@ -27,12 +27,11 @@ public class Matrix4d {
         }
     }
 
-    public void setToProjectionMatrix(int screenWidth, int screenHeight)
+    public void setToProjectionMatrix(int screenWidth, int screenHeight, double fov)
     {
         //Matrix taken from https://www.youtube.com/watch?v=ih20l3pJoeU
         double near = 0.1d;     //Near plane (distance from camera/eyes to screen)
         double far = 1000.0d;   //Far plane
-        double fov = 90.0;     //Field of View
         double aspectRatio = (double)screenWidth/(double)screenHeight;  //Screen aspect ratio
         double fovRad = 1.0d/Math.tan( fov*0.5d/180.0d*Math.PI );  //modified fov value, in radians
         reset();
@@ -41,6 +40,12 @@ public class Matrix4d {
         mat[2][2] = far/(far-near);
         mat[2][3] = 1.0d;
         mat[3][2] = (-far*near)/(far-near);
+    }
+
+    public void setToProjectionMatrix(int screenWidth, int screenHeight)
+    {
+        double fov = 90.0;      //Field of View. Increasing -> zooms out, decreasing -> zooms in.
+        setToProjectionMatrix(screenWidth, screenHeight, fov);
     }
 
     public void setToXRotationMatrix(double theta)
