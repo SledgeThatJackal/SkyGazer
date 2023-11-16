@@ -10,9 +10,10 @@
         android:id="@+id/constellation_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        tools:text="Constellation Name" >
-    </TextView>
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:text="Constellation Name"></TextView>
 </RelativeLayout>
