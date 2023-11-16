@@ -2,7 +2,9 @@ package com.echo.skygazer;
 
 import android.util.Log;
 
-import com.echo.skygazer.io.HygDatabase;
+import androidx.fragment.app.FragmentActivity;
+
+import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.io.WebResource;
 
 import java.io.File;
@@ -33,7 +35,6 @@ public class Main {
 
     public static String getRootCachePath() { return rootCachePath; }
     public static MainActivity getMainActivity() { return mActivity; }
-
     /**
      * Log string to logcat (System.out.println() doesn't work)
      * <p>
@@ -66,9 +67,6 @@ public class Main {
         //To see the downloaded file(s), go to Toolbar > View > Tool Windows > Device Explorer. Then navigate to "/data/user/0/com.echo.skygazer/cache".
         //If you are looking for a newly downloaded file you may have to use: Right Click -> Synchronize on the directory where the file should be.
         //Download example is below. If you want to use getLine() or getWikipediaInfo(), that must be done in WebResource.onProcessingFinished().
-        WebResource wr = new WebResource("https://en.wikipedia.org/wiki/Sirius", "wiki/Sirius.html", 1234);
-        wr.cache();
-
         WebResource hygWR = new WebResource("https://raw.githubusercontent.com/astronexus/HYG-Database/master/hyg/v3/hyg_v37.csv", "db/hyg.csv", 1000);
         hygWR.cache();
     }
