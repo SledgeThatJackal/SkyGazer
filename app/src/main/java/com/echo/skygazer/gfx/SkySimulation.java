@@ -1,23 +1,16 @@
 package com.echo.skygazer.gfx;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
-import androidx.preference.PreferenceManager;
-
 import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
-import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.WebResource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
-import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,7 +70,14 @@ public class SkySimulation extends SurfaceView implements Runnable
 
         TextView wiki = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
         if(wiki!=null) {
-            wiki.setText(WebResource.getCurrentWikipediaText());
+            SkyDot sd = getSelectedSkyDot();
+            String basics = "Loading...\n\n";
+            if(sd!=null) {
+                basics = sd.toUserString();
+            }
+
+            String wikiText = basics+WebResource.getCurrentWikipediaText();
+            wiki.setText(wikiText);
         }
 
         timer++;
@@ -210,11 +210,6 @@ public class SkySimulation extends SurfaceView implements Runnable
         return getSkyDot(selectedSkyDotId);
     }
 
-    private void showWindow() {
-        showingWindow = true;
-        showingPreviewTab = false;
-    }
-
     private void showPreviewTab(String starName) {
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
 
@@ -226,7 +221,7 @@ public class SkySimulation extends SurfaceView implements Runnable
 
         TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
         if(dbID!=null) {
-            String idText = "ID: "+selectedSkyDotId;
+            String idText = "HYG database ID: "+selectedSkyDotId;
             dbID.setText(idText);
         }
 
