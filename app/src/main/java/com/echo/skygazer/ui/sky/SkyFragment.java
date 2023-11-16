@@ -19,7 +19,6 @@ import com.echo.skygazer.Main;
 import com.echo.skygazer.R;
 import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
-import com.echo.skygazer.gfx.SkyView;
 import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.io.HygDatabase;
@@ -36,7 +35,6 @@ public class SkyFragment extends Fragment {
     private float lastDragX = 0;
     private float lastDragY = 0;
     private boolean dragging = false;
-    private static SkyView skyView = null;
     private ImageButton constellationVisibilityButton;
     private SideSheetDialog sideSheetDialog;
 
@@ -115,8 +113,7 @@ public class SkyFragment extends Fragment {
             // Visible Section
             RecyclerView visible = sideSheetDialog.findViewById(R.id.visible_constellation_list);
             visible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-            ConstellationAdapter constellationAdapter = new ConstellationAdapter(getActivity().getApplicationContext(), visStrList);
-            visible.setAdapter(constellationAdapter);
+            visible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), visStrList));
 
             // Not Visible Section
             RecyclerView notVisible = sideSheetDialog.findViewById(R.id.not_visible_constellation_list);
