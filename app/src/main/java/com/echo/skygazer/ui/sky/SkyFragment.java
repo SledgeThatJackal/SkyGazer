@@ -44,7 +44,7 @@ public class SkyFragment extends Fragment {
         // Set up FAB for constellation visibility
         constellationVisibilityButton = (ImageButton) rootView.findViewById(R.id.constellation_visible_button);
 
-        // Initialize side sheet that displays the currently visible constellations
+        // Initialize side sheet that displays the currently visible and not visible constellations
         sideSheetDialog = new SideSheetDialog(requireContext());
         sideSheetDialog.setContentView(R.layout.constellation_side_view);
 
@@ -94,7 +94,6 @@ public class SkyFragment extends Fragment {
         // Create side sheet when the eye button is touched
         constellationVisibilityButton.setOnClickListener(view -> {
             Constellations constellations = new Constellations();
-            Log.d("Constellations", constellations.toString());
 
             // Place Holder Values
             List<String> visStrList = new ArrayList<>();
@@ -110,13 +109,8 @@ public class SkyFragment extends Fragment {
 
             // Visible Section
             RecyclerView visible = sideSheetDialog.findViewById(R.id.visible_constellation_list);
-            Log.d("RecyclerView", visible.toString());
-            LinearLayoutManager visibleLayoutManger = new LinearLayoutManager(getActivity().getApplicationContext());
-            Log.d("LayoutManager", visibleLayoutManger.toString());
-            visible.setLayoutManager(visibleLayoutManger);
-
+            visible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
             ConstellationAdapter constellationAdapter = new ConstellationAdapter(getActivity().getApplicationContext(), visStrList);
-            Log.d("ConstellationAdapter", constellationAdapter.toString());
             visible.setAdapter(constellationAdapter);
 
             // Not Visible Section
@@ -124,6 +118,7 @@ public class SkyFragment extends Fragment {
             notVisible.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
             notVisible.setAdapter(new ConstellationAdapter(getActivity().getApplicationContext(), notStrList));
 
+            // After gathering Constellations and populating RecyclerViews display the SideSheet
             sideSheetDialog.show();
         });
 
