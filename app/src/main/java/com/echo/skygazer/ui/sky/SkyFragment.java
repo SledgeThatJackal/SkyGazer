@@ -16,7 +16,10 @@ import com.echo.skygazer.Main;
 import com.echo.skygazer.R;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkyView;
+import com.echo.skygazer.io.HygDataRow;
 import com.echo.skygazer.io.HygDatabase;
+
+import java.util.List;
 
 public class SkyFragment extends Fragment {
 
@@ -96,8 +99,19 @@ public class SkyFragment extends Fragment {
 
     public static SkyView getSkyView() { return skyView; }
 
+    //perfoming the search query
     public void performSearch(String query){
+        List<Integer> searchResults = HygDatabase.searchStars(query);
 
+        //results
+        if(!searchResults.isEmpty()){
+            //go through the searchResults
+            for(Integer starID: searchResults){
+              //do method stuff
+            }
+        } else{
+            Main.log("No stars were found");
+        }
     }
 
     @Override

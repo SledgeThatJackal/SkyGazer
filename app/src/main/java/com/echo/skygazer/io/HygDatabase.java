@@ -17,6 +17,7 @@ import com.echo.skygazer.gfx.SkyView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HygDatabase {
@@ -179,6 +180,16 @@ public class HygDatabase {
         return -1;
     }
 
+    public static List<Integer> searchStars(String searchInput){
+        List<Integer> matchingIDs = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
+            String starName = entry.getKey();
+            if(starName.toLowerCase().contains(searchInput)){
+                matchingIDs.add(entry.getValue());
+            }
+        }
+        return matchingIDs;
+    }
 
 
     public static boolean isInitialized() { return initialized; }
