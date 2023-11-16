@@ -23,6 +23,7 @@
         <item name="preferenceTheme">@style/AppPreferenceThemeOverlay.Low</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton.Low</item>
         <item name="materialSwitchStyle">@style/Widget.App.Switch.Low</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog.Low</item>
     </style>
 
     <style name="ThemeOverlay.App.SideSheetDialog.Low" parent="ThemeOverlay.Material3.SideSheetDialog">
@@ -43,5 +44,9 @@
 
     <style name="Widget.App.Switch.Low" parent="Widget.Material3.CompoundButton.MaterialSwitch">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch.Low</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog.Low" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog.Low</item>
     </style>
 </resources>
