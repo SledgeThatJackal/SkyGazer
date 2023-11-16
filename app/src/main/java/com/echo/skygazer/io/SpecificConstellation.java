@@ -6,12 +6,12 @@ import java.util.List;
 public class SpecificConstellation {
     private final int CONSTELLATION_ID;
     private final String CONSTELLATION_NAME;
-    private final int[] LINK;
+    private final int[] LINKS;
 
-    public SpecificConstellation(int CONSTELLATION_ID, String CONSTELLATION_NAME, int[] LINK) {
+    public SpecificConstellation(int CONSTELLATION_ID, String CONSTELLATION_NAME, int[] LINKS) {
         this.CONSTELLATION_ID = CONSTELLATION_ID;
         this.CONSTELLATION_NAME = CONSTELLATION_NAME;
-        this.LINK = LINK;
+        this.LINKS = LINKS;
     }
 
     public int getConstellationID() {
@@ -22,7 +22,7 @@ public class SpecificConstellation {
         return CONSTELLATION_NAME;
     }
 
-    public int[] getLink() {
-        return LINK;
+    public int[] getLinks() {
+        return LINKS;
     }
 }
