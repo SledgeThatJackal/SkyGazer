@@ -75,14 +75,9 @@ public class SkySimulation extends SurfaceView implements Runnable
         skyView.setWH((int)width, (int)height);
         skyView.draw(canvas, paint, skyObjects);
 
-        //Window
-        if(showingWindow) {
-            InfoView.drawDataWindow(this, canvas, paint, width, height);
-        }
-
-        //Star preview tab
-        if(showingPreviewTab) {
-            InfoView.drawDataPreviewTab(this, canvas, paint, width, height);
+        TextView wiki = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
+        if(wiki!=null) {
+            wiki.setText(WebResource.getCurrentWikipediaText());
         }
 
         timer++;
@@ -128,17 +123,9 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         //If we found SkyDot(s)
-        if(!showingPreviewTab && !showingWindow && foundSkyDot) {
+        if(foundSkyDot) {
             selectedSkyDotId = closestSkyDotID;
             showPreviewTab(getSkyDot(selectedSkyDotId).getDisplayName());
-//            TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
-//            header.setText(getSkyDot(selectedSkyDotId).getDisplayName());
-//
-//            TextView body = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
-//            body.setText(WebResource.getCurrentWikipediaText());
-//
-//            TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
-//            dbID.setText(selectedSkyDotId);
         }
     }
 
@@ -240,8 +227,19 @@ public class SkySimulation extends SurfaceView implements Runnable
 
     private void showPreviewTab(String starName) {
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
+
+        TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
+        String name = getSkyDot(selectedSkyDotId).getDisplayName();
+        if(header!=null) {
+            header.setText(name);
+        }
+
+        TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
+        if(dbID!=null) {
+            String idText = "ID: "+selectedSkyDotId;
+            dbID.setText(idText);
+        }
+
         bottomSheetDialog.show();
-        showingWindow = false;
-        showingPreviewTab = true;
     }
 }
