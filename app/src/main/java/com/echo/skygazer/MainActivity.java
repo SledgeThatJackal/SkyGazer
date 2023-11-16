@@ -8,24 +8,27 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.ui.sky.SkyFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     //Progress Dialog
     public static final int PROGRESS_BAR_TYPE = 0;
 
     private ActivityMainBinding binding;
+
     public enum NavSectionID { MAP, SKY, SETTINGS, UNKNOWN }
     private NavSectionID navSectionId = NavSectionID.UNKNOWN;
 
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         View rootView = binding.getRoot();
         //Set content view
         setContentView(rootView);
+
+        // Create Shared Preference Manager to listen for theme change
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 
         // Create functional bottom navbar with 'map_view', 'sky_view', 'settings'
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -140,6 +146,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return theme;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if(s.equals("low_light_mode")){
+            recreate();
+        }
     }
 }
 
