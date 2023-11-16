@@ -21,6 +21,7 @@ import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.gfx.SkyView;
 import com.echo.skygazer.io.Constellations;
+import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
 import com.google.android.material.sidesheet.SideSheetDialog;
@@ -39,6 +40,8 @@ public class SkyFragment extends Fragment {
     private ImageButton constellationVisibilityButton;
     private SideSheetDialog sideSheetDialog;
 
+    private static SkySimulation skySim = null;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
         LinearLayout rootLayout = rootView.findViewById(R.id.sky_view);
@@ -50,13 +53,13 @@ public class SkyFragment extends Fragment {
         sideSheetDialog = new SideSheetDialog(requireContext());
         sideSheetDialog.setContentView(R.layout.constellation_side_view);
 
-        //Build SkyDrawing, add to root layout, start draw thread.
-        skyView = new SkyView(getActivity());
-        rootLayout.addView(skyView);
-        skyView.startDrawThread();
+        //Build SkySim, add to root layout, start draw thread.
+        skySim = new SkySimulation(getActivity());
+        rootLayout.addView(skySim);
+        skySim.startDrawThread();
 
         if( HygDatabase.isInitialized() ) {
-            HygDatabase.setStarsRandomly( SkyFragment.getSkyView(), 8 );
+            HygDatabase.setVisibleStars( getSkySim() );
         }
 
         //Touch detection listener
@@ -73,7 +76,7 @@ public class SkyFragment extends Fragment {
                     case MotionEvent.ACTION_DOWN: {
                         Main.log( "Touched screen @ ("+x+", "+y+")" );
                         rootView.performClick();
-                        skyView.doTapAt(x, y);
+                        skySim.doTapAt(x, y);
                     } break;
                     case MotionEvent.ACTION_UP: {
                         lastDragX = 0;
@@ -82,7 +85,7 @@ public class SkyFragment extends Fragment {
                     } break;
                     case MotionEvent.ACTION_MOVE: {
                         if(dragging) {
-                            skyView.doDragAt(x-lastDragX, y-lastDragY);
+                            skySim.doDragAt(x-lastDragX, y-lastDragY);
                         }
                         lastDragX = x;
                         lastDragY = y;
@@ -127,7 +130,7 @@ public class SkyFragment extends Fragment {
         return rootView;
     }
 
-    public static SkyView getSkyView() { return skyView; }
+    public static SkySimulation getSkySim() { return skySim; }
 
     @Override
     public void onDestroyView() {

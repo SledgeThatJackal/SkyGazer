@@ -4,6 +4,7 @@ import android.content.Context.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,7 +14,8 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import com.echo.skygazer.Main;
-import com.echo.skygazer.gfx.SkyView;
+import com.echo.skygazer.gfx.SkySimulation;
+import com.echo.skygazer.gfx.skyobj.SkyDot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,16 +23,12 @@ import java.util.Map;
 
 public class HygDatabase {
 
-    public static final float navbarHeight = 250;
-    public static final float ptWidth = 512+256;
-    public static final float ptHeight = 96;
-    public static final float wMargin = 160;
-
     private static boolean initialized = false;
 
-    private static Map<Integer, HygDataRow> hygMap = new HashMap<>();       //Find stars given their database ID (~110k)
-    private static Map<String, Integer> hygDictionary = new HashMap<>();    //Find star ID given their proper name (only 367 of them, not that many). These are the stars we can "search" for when we get to that function.
-    private static int selectedRowId = -1;
+    private static final Map<Integer, HygDataRow> hygMap = new HashMap<>();       //Find stars given their database ID (~110k)
+    private static final Map<String, Integer> hygDictionary = new HashMap<>();    //Find star ID given their proper name (only 367 of them, not that many). These are also the stars we can "search" for.
+    private static HygDataRow selectedHygData = null;
+    private static boolean initVisuals = false;
 
     public static void init(ArrayList<String> dlData) {
 
@@ -39,22 +37,35 @@ public class HygDatabase {
         if(initialized) {
             Main.log("[WARNING] static class HygDatabase has already been initialized!");
         } else {
-
             // Build 'hygMap' based on 'dlData'.
             for(int i = 1; i<dlData.size(); i++) {
-
                 String[] rowComponents = dlData.get(i).split(",");
-                int id = 0;
+
+                //Get components
+                int id = 0;         //Get ID (id)
+                String properName = "Error";
+                double mag = 0.0;
+                double x = 0.0;     //Get x
+                double y = 0.0;     //Get y
+                double z = 0.0;     //Get z
                 try {
                     id = Integer.parseInt(rowComponents[0]);
+                    properName = rowComponents[6];
+                    mag = Double.parseDouble(rowComponents[13]);
+                    x = Double.parseDouble(rowComponents[17]);
+                    y = Double.parseDouble(rowComponents[18]);
+                    z = Double.parseDouble(rowComponents[19]);
                 } catch (NumberFormatException e) {
+                    Main.log("[WARNING] Couldn't parse row "+i+" in dlData, defaulting values to 0 and skipping");
                     continue;
                 }
 
-                String properName = rowComponents[6];
+                //Build data row
                 if(!properName.equals("")) {
-                    HygDataRow hygDR = new HygDataRow(id, properName);
-                    hygMap.put(id, hygDR);
+                    //Put proper name in data row if it exists
+                    hygMap.put( id, new HygDataRow(id, properName, mag, x, y, z) );
+                } else {
+                    hygMap.put( id, new HygDataRow(id, null, mag, x, y, z) );
                 }
             }
 
@@ -65,7 +76,7 @@ public class HygDatabase {
                 if(hdr!=null) {
                     hygDictionary.put(hdr.getProperName(), hdr.getId());
                 } else {
-                    Main.log("null hdr. rip, I did something wrong.");
+                    Main.log("null hdr because I did something wrong.");
                 }
             }
 
@@ -128,7 +139,12 @@ public class HygDatabase {
         float txtW = pt.measureText(txt);
         cs.drawText(txt, sw/2-txtW/2, sh-navbarHeight+64, pt);
         //cs.drawText();
+    }
 
+    public static boolean isInitialized() { return initialized; }
+
+    public static HygDataRow getSelectedHygData() {
+        return selectedHygData;
     }
 
     public static int selectRandomDictionaryRow() {
@@ -144,42 +160,59 @@ public class HygDatabase {
         for(Map.Entry<String, Integer> entry : hygDictionary.entrySet())
         {
             if (i == item) {
-                selectedRowId = entry.getValue();
+                selectRow( entry.getValue() );
             }
             i++;
-        }
-
-        if( hygMap.get(selectedRowId)==null ) {
-            Main.log("null map get. rip, I did something wrong.");
-            return -2;
         }
         return i;
     }
 
-    /**
-     * Turns all current stars into random stars from the set of stars that have proper names.
-     */
-    public static void setStarsRandomly(SkyView sv, int numStars) {
-        for(int i = 0; i<numStars; i++) {
-            selectRandomDictionaryRow();
-            sv.getSkyDot(i).setDisplayName( hygMap.get(selectedRowId).getProperName() );
+    public static void setVisibleStars(SkySimulation ss) {
+        if(initVisuals) {
+            //return;
         }
-    }
 
-    public static int selectRow(String starName) {
-        try {
-            selectedRowId = hygDictionary.get(starName);
-        } catch (Exception e) {
-            return -1;
+        for(int i = 0; i<1000; i++) {
+            selectRow( Main.random.nextInt(hygDictionary.size()) );
+            if( selectedHygData==null ) continue;
+            //ss.addSkyObject( selectedHygData.getId(), new SkyDot(selectedHygData));
         }
-        return selectedRowId;
+
+        for( Map.Entry<String, Integer> entry : hygDictionary.entrySet() ) {
+            selectRow( entry.getValue() );
+            ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
+        }
+
+        //selectRow( "Betelgeuse" );
+        //ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
+
+        //Main.log(selectedHygData.getId());
+        Main.log(selectedHygData);
+        initVisuals = true;
     }
 
     public static int selectRow(int rowID) {
-        return -1;
+        selectedHygData = null;
+        try {
+            selectedHygData = hygMap.get(rowID);
+        } catch (Exception e) {
+            return -1;
+        }
+        return rowID;
     }
 
 
+    public static int selectRow(String starName) {
+        selectedHygData = null;
 
-    public static boolean isInitialized() { return initialized; }
+        int row = -1;
+        try {
+            if(hygDictionary.get(starName) != null) {
+                row = hygDictionary.get(starName);
+            }
+        } catch (NullPointerException ignored) {}
+
+
+        return selectRow(row);
+    }
 }

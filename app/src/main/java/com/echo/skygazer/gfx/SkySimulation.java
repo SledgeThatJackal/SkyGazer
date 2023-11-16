@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.view.SurfaceView;
 
-import com.echo.skygazer.Main;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
 import com.echo.skygazer.io.HygDatabase;
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-public class SkyView extends SurfaceView implements Runnable
+public class SkySimulation extends SurfaceView implements Runnable
 {
     private Thread thread;
     private boolean running = false;
@@ -26,9 +24,9 @@ public class SkyView extends SurfaceView implements Runnable
     private boolean showingPreviewTab = false;
     private float width = 0;
     private float height = 0;
-    private float tx = 100; //Translate all objects' x-coords by this much
-    private float ty = 500; //Translate all objects' y-coords by this much
     private int selectedSkyDotId = -123456789;
+
+    private static SkyView3D skyView;
 
     /**
      * This is a (key, value) list.
@@ -41,22 +39,11 @@ public class SkyView extends SurfaceView implements Runnable
     Paint paint = new Paint();
     float timer = 0;
 
-    public SkyView(Context context) {
+    public SkySimulation(Context context) {
         super(context);
         setWillNotDraw(false);
 
-        for(int i = 0; i<8; i++) {
-            addSkyObject(new SkyDot());
-        }
-        getSkyDot(0).setScreenXY(440, 0);
-        getSkyDot(1).setScreenXY(140, 40);
-        getSkyDot(2).setScreenXY(30, 100);
-        getSkyDot(3).setScreenXY(120, 250);
-        getSkyDot(4).setScreenXY(320, 130);
-        getSkyDot(5).setScreenXY(400, 400);
-        getSkyDot(6).setScreenXY(700, 420);
-        getSkyDot(7).setScreenXY(100, 640);
-
+        skyView = new SkyView3D(getWidth(), getHeight());
 
         addSkyObject( new SkyLine(getSkyDot(0), getSkyDot(1)) );
         addSkyObject( new SkyLine(getSkyDot(1), getSkyDot(2)) );
@@ -74,33 +61,18 @@ public class SkyView extends SurfaceView implements Runnable
         width = getWidth();
         height = getHeight();
 
-        //Background
-        paint.setColor(Color.rgb(21, 22, 48));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
-
-        //SkyObject list
-        for(int i = 0; i<skyObjects.size(); i++) {
-            SkyObject so = skyObjects.get(i);
-            if(so!=null) {
-                so.draw(canvas, paint, tx, ty);
-            }
-        }
-
-        //Crosshair
-        float chRadius = 24;
-        float chWidth = 3;
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(width/2-chRadius, height/2-chWidth, width/2+chRadius, height/2+chWidth, paint);
-        canvas.drawRect(width/2-chWidth, height/2-chRadius, width/2+chWidth, height/2+chRadius, paint);
+        //3d Sky view
+        skyView.setWH((int)width, (int)height);
+        skyView.draw(canvas, paint, skyObjects);
 
         //Window
         if(showingWindow) {
-            HygDatabase.drawDataWindow(this, canvas, paint, width, height);
+            InfoView.drawDataWindow(this, canvas, paint, width, height);
         }
 
         //Star preview tab
         if(showingPreviewTab) {
-            HygDatabase.drawDataPreviewTab(this, canvas, paint, width, height);
+            InfoView.drawDataPreviewTab(this, canvas, paint, width, height);
         }
 
         timer++;
@@ -112,8 +84,8 @@ public class SkyView extends SurfaceView implements Runnable
         //If we clicked on a preview tab
         if( showingPreviewTab ) {
             boolean tappedPreview =
-                tapX>=width/2-HygDatabase.ptWidth/2 && tapX<=width/2+HygDatabase.ptWidth/2 &&
-                tapY>=height-HygDatabase.navbarHeight && tapY<=height-HygDatabase.navbarHeight+HygDatabase.ptHeight;
+                tapX>=width/2-InfoView.ptWidth/2 && tapX<=width/2+InfoView.ptWidth/2 &&
+                tapY>=height-InfoView.navbarHeight && tapY<=height-InfoView.navbarHeight+InfoView.ptHeight;
             if(tappedPreview) {
                 String starName = getSkyDot(selectedSkyDotId).getDisplayName();
                 HygDatabase.selectRow(starName);
@@ -128,8 +100,8 @@ public class SkyView extends SurfaceView implements Runnable
         //If we clicked OUTSIDE a window (outside + close "button")
         if( showingWindow ) {
             boolean tappedWindow =
-                tapX>=HygDatabase.wMargin && tapX<=width-HygDatabase.wMargin &&
-                tapY>=HygDatabase.wMargin && tapY<=height-HygDatabase.wMargin*2-140;
+                tapX>=InfoView.wMargin && tapX<=width-InfoView.wMargin &&
+                tapY>=InfoView.wMargin && tapY<=height-InfoView.wMargin*2-140;
             if(!tappedWindow) {
                 showingWindow = false;
             }
@@ -144,10 +116,10 @@ public class SkyView extends SurfaceView implements Runnable
             //Get the SkyDot object
             SkyDot sd = getSkyDot(entry.getKey());
             //If this is a SkyDot object, detect if it was just tapped
-            if(sd!=null) {
+            if(sd!=null && !sd.hasNegativeDepth() ) {
                 //Object coordinates
-                float sdx = sd.getScreenX()+tx;
-                float sdy = sd.getScreenY()+ty;
+                float sdx = sd.getScreenX()+skyView.getTx();
+                float sdy = sd.getScreenY()+skyView.getTy();
 
                 //Find distance between tap and star
                 double dist = Math.hypot(sdx-(tapX), sdy-(tapY));
@@ -171,8 +143,7 @@ public class SkyView extends SurfaceView implements Runnable
     }
 
     public void doDragAt(float dragX, float dragY) {
-        tx += dragX;
-        ty += dragY;
+        skyView.translate(dragX, dragY);
     }
 
     public void startDrawThread() {

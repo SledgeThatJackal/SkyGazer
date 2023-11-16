@@ -30,6 +30,10 @@
 
     <string name="notifications_celestial_title">Upcoming Celestial Notifications</string>
     <string name="notifications_celestial_summary">Whenever there is an upcoming celestial event, you will be sent a notification</string>
+
+    <string name="open_map_settings">Open Map Settings</string>
+    <string name="close_map_settings">Close Map Settings</string>
+
     <string name="constellation_visibility_description">An eye for seeing what constellations are visible.</string>
     <string name="not_visible">Not Visible:</string>
     <string name="currently_visible">Currently Visible:</string>

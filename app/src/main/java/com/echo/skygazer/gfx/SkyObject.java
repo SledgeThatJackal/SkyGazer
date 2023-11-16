@@ -5,5 +5,5 @@ import android.graphics.Paint;
 
 public abstract class SkyObject
 {
-    protected abstract void draw(Canvas cs, Paint pt, float tx, float ty);
+    protected abstract void draw(Canvas cs, Paint pt, SkyView3D sv3d);
 }
