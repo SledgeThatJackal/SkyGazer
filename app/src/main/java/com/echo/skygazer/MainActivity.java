@@ -2,14 +2,19 @@ package com.echo.skygazer;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.databinding.ActivityMainBinding;
 import com.echo.skygazer.io.HygDatabase;
@@ -66,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
         //Listener for app location change (Map, Sky, Settings)
         navController.addOnDestinationChangedListener(
             (thisNavCtrl, navDst, bundle) -> {
@@ -121,11 +125,27 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", null)                  //No button
                 .show();                                                    //Show alert window
     }
+
+    @Override
+    public Resources.Theme getTheme(){
+        Resources.Theme theme = super.getTheme();
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean lowLightModeValue = pref.getBoolean("low_light_mode", false);
+
+        if(lowLightModeValue){
+            theme.applyStyle(R.style.Theme_LowLight, true);
+        } else {
+            theme.applyStyle(R.style.Theme_Default, true);
+        }
+
+        return theme;
+    }
 }
 
 /*  Example code for retrieving a preference variable
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean value = pref.getBoolean("constellation_highlighting" , true);
+        boolean value = pref.getBoolean("constellation_highlighting", true);
 
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(this, String.valueOf(value), duration);

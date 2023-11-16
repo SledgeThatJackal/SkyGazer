@@ -26,7 +26,6 @@ public class ConstellationAdapter extends RecyclerView.Adapter<ConstellationView
     @NonNull
     @Override
     public ConstellationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("onCreateViewHolder", "Test");
         View view = inflater.inflate(R.layout.constellation_item_view, parent, false);
 
         return new ConstellationViewHolder(view);
