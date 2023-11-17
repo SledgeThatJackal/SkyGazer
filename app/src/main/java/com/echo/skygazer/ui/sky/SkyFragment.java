@@ -86,16 +86,6 @@ public class SkyFragment extends Fragment {
             }
         });
 
-
-
-        //Build SkyDrawing, add to root layout, start draw thread.
-        skyView = new SkyView(getActivity());
-        rootLayout.addView(skyView);
-        skyView.startDrawThread();
-
-
-
-
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setVisibleStars( getSkySim() );
         }
