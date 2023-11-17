@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     case "Map Overlays": {
                         navSectionId = NavSectionID.MAP;
                         setSupportActionBarState(true);
+                        HygDatabase.reinitVisuals();
                         break;
                     }
                     case "Sky View": {
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     case "Settings": {
                         navSectionId = NavSectionID.SETTINGS;
                         setSupportActionBarState(true);
+                        HygDatabase.reinitVisuals();
                         break;
                     }
                 }
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
-    public Resources.Theme getTheme(){
+    public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -147,6 +149,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         return theme;
     }
+
+    public boolean getSettingValue(String setting) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean val = pref.getBoolean(setting, false);
+        return val;
+    }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
