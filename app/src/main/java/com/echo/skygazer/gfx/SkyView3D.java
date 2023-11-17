@@ -8,7 +8,6 @@ import com.echo.skygazer.Main;
 import com.echo.skygazer.gfx.math.Matrix4d;
 import com.echo.skygazer.gfx.math.Point3d;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
-import com.echo.skygazer.gfx.skyobj.SkyLine;
 
 import java.util.Map;
 
@@ -55,8 +54,13 @@ public class SkyView3D
         yRotMatrix.setToYRotationMatrix(0);
         zRotMatrix.setToZRotationMatrix(yaw*Math.PI/180.0);
 
-        //Background
+        /* Background */
+        //Set color to dark blue
         pt.setColor(Color.rgb(21, 22, 48));
+        //Set color to black if in low light mode
+        if(Main.getMainActivity().getSettingValue("low_light_mode")) {
+            pt.setColor(Color.rgb(0, 0, 0));
+        }
         cs.drawRect(0, 0, (float)width, (float)height, pt);
 
         //SkyObject list
@@ -81,8 +85,8 @@ public class SkyView3D
 
         //Debug info
         pt.setColor(Color.YELLOW);
-        cs.drawText("Yaw: "+yaw, 0, 40, pt);
-        cs.drawText("Pitch: "+pitch, 0, 120, pt);
+        //cs.drawText("Yaw: "+yaw, 0, 40, pt);
+        //cs.drawText("Pitch: "+pitch, 0, 120, pt);
     }
 
     public Point3d getProjectedPoint(Point3d p1)

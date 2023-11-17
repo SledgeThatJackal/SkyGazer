@@ -14,12 +14,16 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import com.echo.skygazer.Main;
+import com.echo.skygazer.MainActivity;
 import com.echo.skygazer.gfx.SkySimulation;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
+import com.echo.skygazer.ui.sky.SkyFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class HygDatabase {
 
@@ -82,6 +86,8 @@ public class HygDatabase {
                 }
             }
 
+
+            SkyFragment.getSkySim().onHygDatabaseInit();
             initialized = true;
         }
     }
@@ -114,25 +120,34 @@ public class HygDatabase {
 
     public static void setVisibleStars(SkySimulation ss) {
         if(initVisuals) {
-            //return;
+            return;
         }
 
-        for(int i = 0; i<1000; i++) {
-            selectRow( Main.random.nextInt(hygDictionary.size()) );
-            if( selectedHygData==null ) continue;
-            //ss.addSkyObject( selectedHygData.getId(), new SkyDot(selectedHygData));
+        //Override specific stars to not add.
+        HashSet<Integer> exceptions = new HashSet<>();
+        exceptions.add(0);      //"Sol", which is our own sun.
+        exceptions.add(71456);  //"Rigil Kentaurus" (Alpha centauri). Too close to the 3D camera for some reason, which causes it to spaz out - we will fix this later on.
+
+        //Get stars that are part of a constellation
+        for( int id : Main.getConstellations().getSpecialStars() ) {
+            //Add them
+            if(!exceptions.contains(id)) {
+                selectRow(id);
+                ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
+            }
         }
 
+        //Get stars that are named
         for( Map.Entry<String, Integer> entry : hygDictionary.entrySet() ) {
-            selectRow( entry.getValue() );
-            ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
+            int id = entry.getValue();
+            //Add them
+            if(!exceptions.contains(id)) {
+                selectRow(id);
+                ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
+            }
         }
 
-        //selectRow( "Betelgeuse" );
-        //ss.addSkyObject(selectedHygData.getId(), new SkyDot(selectedHygData));
-
-        //Main.log(selectedHygData.getId());
-        Main.log(selectedHygData);
+        SkyFragment.getSkySim().onHygDatabaseInit();
         initVisuals = true;
     }
 
@@ -159,5 +174,9 @@ public class HygDatabase {
 
 
         return selectRow(row);
+    }
+
+    public static void reinitVisuals() {
+        initVisuals = false;
     }
 }

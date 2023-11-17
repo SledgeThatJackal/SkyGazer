@@ -11,12 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Constellations {
     private HashMap<Integer, SpecificConstellation> constellations = new HashMap<>();
+    private HashSet<Integer> specialStars = new HashSet<>();
 
     public Constellations() {
         try {
@@ -44,6 +48,7 @@ public class Constellations {
                 int[] stars = new int[strStars.length];
                 for(int k = 0; k < strStars.length; k++) {
                     stars[k] = Integer.parseInt(strStars[k]);
+                    specialStars.add(stars[k]);
                 }
 
                 constellations.put(constellationId, new SpecificConstellation(constellationId, constellationName, stars));
@@ -74,5 +79,13 @@ public class Constellations {
         }
 
         return starConstellation;
+    }
+
+    /**
+     * Credit to: Alan's father, who wrote this entire function.
+     * @return The set of star IDs whose stars are part of any constellation.
+     */
+    public HashSet<Integer> getSpecialStars() {
+        return specialStars;
     }
 }

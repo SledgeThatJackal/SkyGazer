@@ -2,13 +2,18 @@ package com.echo.skygazer.gfx;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
+import com.echo.skygazer.Main;
 import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
+import com.echo.skygazer.io.Constellations;
+import com.echo.skygazer.io.HygDatabase;
+import com.echo.skygazer.io.SpecificConstellation;
 import com.echo.skygazer.io.WebResource;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -36,7 +41,7 @@ public class SkySimulation extends SurfaceView implements Runnable
      * The value represents the skyObject itself.
      * Using a map allows us to find any particular star, given its ID, in constant time.
      */
-    Map<Integer, SkyObject> skyObjects = new HashMap<Integer, SkyObject>();
+    Map<Integer, SkyObject> skyObjects = new HashMap<>();
 
     Paint paint = new Paint();
     float timer = 0;
@@ -47,15 +52,26 @@ public class SkySimulation extends SurfaceView implements Runnable
         setWillNotDraw(false);
 
         skyView = new SkyView3D(getWidth(), getHeight());
+    }
 
-        addSkyObject( new SkyLine(getSkyDot(0), getSkyDot(1)) );
-        addSkyObject( new SkyLine(getSkyDot(1), getSkyDot(2)) );
-        addSkyObject( new SkyLine(getSkyDot(2), getSkyDot(3)) );
-        addSkyObject( new SkyLine(getSkyDot(3), getSkyDot(1)) );
-        addSkyObject( new SkyLine(getSkyDot(7), getSkyDot(6)) );
-        addSkyObject( new SkyLine(getSkyDot(5), getSkyDot(6)) );
-        addSkyObject( new SkyLine(getSkyDot(4), getSkyDot(5)) );
-        addSkyObject( new SkyLine(getSkyDot(7), getSkyDot(3)) );
+    public void onHygDatabaseInit()
+    {
+        Constellations cstlns = Main.getConstellations();
+        if(cstlns!=null) {
+            for(Map.Entry<Integer, SpecificConstellation> entry : cstlns.getConstellations().entrySet() ) {
+                SpecificConstellation sc = entry.getValue();
+                //Main.log( "Building "+sc.getConstellationName()+"..." );
+                int[] links = sc.getLinks();
+                for(int i = 0; i<links.length-1; i++) {
+                    addSkyObject(new SkyLine( (links[i]), links[i+1]) );
+                    //Main.log("Built link "+i);
+                }
+            }
+        } else {
+            Main.log("WARNING - Constellations are null.");
+        }
+
+        addSkyObject(new SkyLine( 110049, 108728) );
     }
 
     @Override
@@ -65,8 +81,10 @@ public class SkySimulation extends SurfaceView implements Runnable
         height = getHeight();
 
         //3d Sky view
-        skyView.setWH((int)width, (int)height);
-        skyView.draw(canvas, paint, skyObjects);
+        if(skyView!=null) {
+            skyView.setWH((int)width, (int)height);
+            skyView.draw(canvas, paint, skyObjects);
+        }
 
         TextView wiki = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
         if(wiki!=null) {
@@ -202,6 +220,14 @@ public class SkySimulation extends SurfaceView implements Runnable
         SkyObject so = getSkyObject(id);
         if( so instanceof SkyDot ) {
             return (SkyDot)so;
+        }
+        return null;
+    }
+
+    public SkyLine getSkyLine(int id) {
+        SkyObject so = getSkyObject(id);
+        if( so instanceof SkyLine ) {
+            return (SkyLine)so;
         }
         return null;
     }

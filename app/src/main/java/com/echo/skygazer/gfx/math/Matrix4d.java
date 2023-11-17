@@ -7,6 +7,7 @@ import com.echo.skygazer.Main;
 public class Matrix4d {
 
     double[][] mat = new double[4][4];
+    private static boolean loggedWarning = false;
 
     public Matrix4d() {
         reset();
@@ -113,7 +114,13 @@ public class Matrix4d {
             res.z /= w;
             return res;
         } else {
-            Main.log("Matrix4d.multiply3d() - w should never be zero!");
+            if(!loggedWarning) {
+                Main.log("Matrix4d.multiply3d() - w should never be zero!");
+                loggedWarning = true;
+            }
+            res.x /= 100d;
+            res.y /= 100d;
+            res.z /= 100d;
             return res;
         }
     }
