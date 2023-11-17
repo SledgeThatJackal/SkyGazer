@@ -25,5 +25,66 @@
             "constellationName": "Auriga",
             "links": "24549 28288 28309 25364 22961 23125 23361 24549"
         }
+        ,
+        {
+            "constellationID": "9",
+            "constellationName": "Boötes",
+            "links": "67246 67711 69451 70828 70851 73327 74438 71879 69451 71569"
+        },
+        {
+            "constellationID": "12",
+            "constellationName": "Cancer",
+            "links": "43939 42792 42687 42981 42687 41790 41704 40054 41704 40411 41704 42792"
+        },
+        {
+            "constellationID": "16",
+            "constellationName": "Capricornus",
+            "links": "107213 106381 105540 103899 102647 102154 100020 99743 100020 103804 105175 106642 107213"
+        },
+        {
+            "constellationID": "18",
+            "constellationName": "Cassiopeia",
+            "links": "8867 6672 4417 3172 744"
+        },
+        {
+            "constellationID": "20",
+            "constellationName": "Cepheus",
+            "links": "116361 105691 112364 110645 104861 105691"
+        },
+        {
+            "constellationID": "27",
+            "constellationName": "Corona Borealis",
+            "links": "78256 77923 77276 76716 76035 75466 75895"
+        },
+        {
+            "constellationID": "28",
+            "constellationName": "Corvus",
+            "links": "60776 61166 59134 59621 60776"
+        },
+        {
+            "constellationID": "29",
+            "constellationName": "Crater",
+            "links": "58014 57111 55539 54522 53584 55118 55539 55118 55521 56464"
+        },
+        {
+            "constellationID": "31",
+            "constellationName": "Cygnus",
+            "links": "102157 100128 101767 100128 96858 100128 95648"
+        },
+        {
+            "constellationID": "32",
+            "constellationName": "Delphinus",
+            "links": "101095 101442 101629 102200 102200 101950 101442"
+        },
+        {
+            "constellationID": "34",
+            "constellationName": "Draco",
+            "links": "87561 87314 87561 87314 94081 89660 83638 80089 75229 68537 61088 56044"
+        },
+        {
+            "constellationID": "36",
+            "constellationName": "Eridanus",
+            "links": "23917 23820 22056 21391 19538 18497 17336 17336 16496 15159 13667 12810 13254 14112 15436 16570 17609 18626 21195 19992"
+        }
     ]
 }
