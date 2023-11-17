@@ -28,6 +28,16 @@
         <item name="colorOutline">@color/black</item>
     </style>
 
+    <style name="ModalBottomSheetDialog.Default" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="backgroundTint">@color/ice_blue</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button.Default" parent="">
+        <item name="colorPrimary">@color/mapbox_blue</item>
+        <item name="colorOnPrimary">@color/ice_blue</item>
+    </style>
+
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">24dp</item>
@@ -60,5 +70,15 @@
         <item name="colorPrimary">@color/red</item>
         <item name="colorSurfaceVariant">@color/black</item>
         <item name="colorOutline">@color/red</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog.Low" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="backgroundTint">@color/darkest_red</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button.Low" parent="">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/red</item>
     </style>
 </resources>

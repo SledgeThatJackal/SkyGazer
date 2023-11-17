@@ -22,6 +22,7 @@ import com.echo.skygazer.ui.sky.SkyFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -161,6 +162,16 @@ public class HygDatabase {
         return rowID;
     }
 
+    public static List<Integer> searchStars(String searchInput){
+        List<Integer> matchingIDs = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
+            String starName = entry.getKey();
+            if(starName.toLowerCase().contains(searchInput)){
+                matchingIDs.add(entry.getValue());
+            }
+        }
+        return matchingIDs;
+    }
 
     public static int selectRow(String starName) {
         selectedHygData = null;
