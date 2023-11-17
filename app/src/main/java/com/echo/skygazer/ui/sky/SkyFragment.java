@@ -39,8 +39,11 @@ public class SkyFragment extends Fragment {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+            public boolean onQueryTextSubmit(String query) {
+                //Main.log(s);
+                skyView.performSearch(query);
+                searchView.clearFocus();
+                return true;
             }
 
             @Override
@@ -99,20 +102,7 @@ public class SkyFragment extends Fragment {
 
     public static SkyView getSkyView() { return skyView; }
 
-    //perfoming the search query
-    public void performSearch(String query){
-        List<Integer> searchResults = HygDatabase.searchStars(query);
 
-        //results
-        if(!searchResults.isEmpty()){
-            //go through the searchResults
-            for(Integer starID: searchResults){
-              //do method stuff
-            }
-        } else{
-            Main.log("No stars were found");
-        }
-    }
 
     @Override
     public void onDestroyView() {

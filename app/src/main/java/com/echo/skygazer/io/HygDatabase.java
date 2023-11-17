@@ -184,6 +184,7 @@ public class HygDatabase {
         List<Integer> matchingIDs = new ArrayList<>();
         for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
             String starName = entry.getKey();
+            //fix bug where it doesnt recognize uppercase but recognizes lowercase
             if(starName.toLowerCase().contains(searchInput)){
                 matchingIDs.add(entry.getValue());
             }
@@ -191,6 +192,15 @@ public class HygDatabase {
         return matchingIDs;
     }
 
+    //method that returns string from the id of a star
+    public static String getStringFromID(Integer id){
+        for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
+            if(entry.getValue() == id){
+                return entry.getKey();
+            }
+        }
+        return "Nothing was returned :(";
+    }
 
     public static boolean isInitialized() { return initialized; }
 }
