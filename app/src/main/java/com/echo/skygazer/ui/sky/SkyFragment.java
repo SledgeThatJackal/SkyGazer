@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import android.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.gfx.SkySimulation;
+import com.echo.skygazer.io.HygDataRow;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -32,6 +34,8 @@ import com.google.android.material.sidesheet.SideSheetDialog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import java.util.List;
 
 public class SkyFragment extends Fragment {
 
@@ -43,6 +47,7 @@ public class SkyFragment extends Fragment {
     private SideSheetDialog sideSheetDialog;
     private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
+    private static SearchView searchView = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
@@ -63,6 +68,20 @@ public class SkyFragment extends Fragment {
         skySim = new SkySimulation(getActivity(), bottomSheetDialog);
         rootLayout.addView(skySim);
         skySim.startDrawThread();
+        //find the searchView from the layout
+        searchView = rootView.findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setVisibleStars( getSkySim() );
@@ -154,6 +173,21 @@ public class SkyFragment extends Fragment {
     }
 
     public static SkySimulation getSkySim() { return skySim; }
+
+    //perfoming the search query
+    public void performSearch(String query){
+        List<Integer> searchResults = HygDatabase.searchStars(query);
+
+        //results
+        if(!searchResults.isEmpty()){
+            //go through the searchResults
+            for(Integer starID: searchResults){
+              //do method stuff
+            }
+        } else{
+            Main.log("No stars were found");
+        }
+    }
 
     @Override
     public void onDestroyView() {
