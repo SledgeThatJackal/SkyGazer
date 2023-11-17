@@ -59,6 +59,9 @@ public class SkyFragment extends Fragment {
         rootLayout.addView(skyView);
         skyView.startDrawThread();
 
+
+
+
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setStarsRandomly( SkyFragment.getSkyView(), 8 );
         }
