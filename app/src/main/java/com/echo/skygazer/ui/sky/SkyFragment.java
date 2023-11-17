@@ -73,8 +73,11 @@ public class SkyFragment extends Fragment {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+            public boolean onQueryTextSubmit(String query) {
+                //Main.log(s);
+                skySim.performSearch(query);
+                searchView.clearFocus();
+                return true;
             }
 
             @Override
@@ -82,6 +85,16 @@ public class SkyFragment extends Fragment {
                 return false;
             }
         });
+
+
+
+        //Build SkyDrawing, add to root layout, start draw thread.
+        skyView = new SkyView(getActivity());
+        rootLayout.addView(skyView);
+        skyView.startDrawThread();
+
+
+
 
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setVisibleStars( getSkySim() );
@@ -174,20 +187,7 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
-    //perfoming the search query
-    public void performSearch(String query){
-        List<Integer> searchResults = HygDatabase.searchStars(query);
 
-        //results
-        if(!searchResults.isEmpty()){
-            //go through the searchResults
-            for(Integer starID: searchResults){
-              //do method stuff
-            }
-        } else{
-            Main.log("No stars were found");
-        }
-    }
 
     @Override
     public void onDestroyView() {

@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -252,5 +253,25 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         bottomSheetDialog.show();
+    }
+
+    //perfoming the search query
+    public void performSearch(String query){
+        List<Integer> searchResults = HygDatabase.searchStars(query);
+        //results
+        if(!searchResults.isEmpty()){
+            Integer starID = searchResults.get(0);
+            String starName = HygDatabase.getStringFromID(starID);
+            Main.log("Star is " + searchResults.get(0));
+            Main.log("Star name is " + HygDatabase.getStringFromID(starID));
+            //HygDatabase.selectRow(starName);
+            WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
+            selectedSkyDotId = starID;
+
+            showPreviewTab(starName);
+
+        } else{
+            Main.log("No stars were found");
+        }
     }
 }
