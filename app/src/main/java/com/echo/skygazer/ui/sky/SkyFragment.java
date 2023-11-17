@@ -25,7 +25,6 @@ import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
 import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.gfx.SkySimulation;
-import com.echo.skygazer.gfx.SkyView;
 import com.echo.skygazer.io.HygDataRow;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
@@ -48,7 +47,6 @@ public class SkyFragment extends Fragment {
     private SideSheetDialog sideSheetDialog;
     private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
-    private static SkyView skyView = null;
     private static SearchView searchView = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,13 +82,6 @@ public class SkyFragment extends Fragment {
                 return false;
             }
         });
-
-
-
-        //Build SkyDrawing, add to root layout, start draw thread.
-        skyView = new SkyView(getActivity());
-        rootLayout.addView(skyView);
-        skyView.startDrawThread();
 
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setVisibleStars( getSkySim() );
