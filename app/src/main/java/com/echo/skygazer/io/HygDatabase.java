@@ -165,10 +165,14 @@ public class HygDatabase {
 
     public static List<Integer> searchStars(String searchInput){
         List<Integer> matchingIDs = new ArrayList<>();
+        Main.log(hygDictionary);
         for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
             String starName = entry.getKey();
             //fix bug where it doesnt recognize uppercase but recognizes lowercase
-            if(starName.toLowerCase().contains(searchInput)){
+            if(starName == null){
+                continue;
+            }
+            if(starName.toLowerCase().contains(searchInput.toLowerCase())){
                 matchingIDs.add(entry.getValue());
             }
         }

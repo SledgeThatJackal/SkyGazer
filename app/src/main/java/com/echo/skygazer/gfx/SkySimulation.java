@@ -240,35 +240,6 @@ public class SkySimulation extends SurfaceView implements Runnable
     private void showPreviewTab(String starName) {
         WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
 
-    //perfoming the search query
-    public void performSearch(String query){
-        List<Integer> searchResults = HygDatabase.searchStars(query);
-        //results
-        if(!searchResults.isEmpty()){
-            Integer starID = searchResults.get(0);
-            String starName = HygDatabase.getStringFromID(starID);
-            Main.log("Star is " + searchResults.get(0));
-            Main.log("Star name is " + HygDatabase.getStringFromID(starID));
-            //HygDatabase.selectRow(starName);
-            WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
-            showWindow();
-
-        } else{
-            Main.log("No stars were found");
-        }
-    }
-
-    public void performActionForStar(int starID){
-
-    }
-
-    private void simulateButtonPressForStar(int starID){
-
-    }
-
-    private void showPreviewTab() {
-        showingWindow = false;
-        showingPreviewTab = true;
         TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
         String name = getSkyDot(selectedSkyDotId).getDisplayName();
         if(header!=null) {
@@ -282,5 +253,25 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         bottomSheetDialog.show();
+    }
+
+    //perfoming the search query
+    public void performSearch(String query){
+        List<Integer> searchResults = HygDatabase.searchStars(query);
+        //results
+        if(!searchResults.isEmpty()){
+            Integer starID = searchResults.get(0);
+            String starName = HygDatabase.getStringFromID(starID);
+            Main.log("Star is " + searchResults.get(0));
+            Main.log("Star name is " + HygDatabase.getStringFromID(starID));
+            //HygDatabase.selectRow(starName);
+            WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
+            selectedSkyDotId = starID;
+
+            showPreviewTab(starName);
+
+        } else{
+            Main.log("No stars were found");
+        }
     }
 }

@@ -75,7 +75,7 @@ public class SkyFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Main.log(s);
-                skyView.performSearch(query);
+                skySim.performSearch(query);
                 searchView.clearFocus();
                 return true;
             }
