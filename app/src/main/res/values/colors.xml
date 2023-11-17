@@ -9,10 +9,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#25FFFFFF</color>
 
-    <color name="red_body">#671313</color>
-    <color name="red_header">#4C0303</color>
-
     <color name="night_blue">#FF0E0E1C</color>
     <color name="dusk">#FF151630</color>
     <color name="dusk_background">#FF304354</color>
+
+    <color name="dark_gray">#393939</color>
+    <color name="red">#671313</color>
+    <color name="dark_red">#4C0303</color>
+    <color name="light_red">#8F1515</color>
+    <color name="darkest_red">#270101</color>
+    <color name="ice_blue">#C1DEE1</color>
 </resources>

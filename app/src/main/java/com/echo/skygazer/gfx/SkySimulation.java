@@ -4,14 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import com.echo.skygazer.Main;
+import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
 import com.echo.skygazer.gfx.skyobj.SkyLine;
+import com.echo.skygazer.io.Constellations;
 import com.echo.skygazer.io.HygDatabase;
+import com.echo.skygazer.io.SpecificConstellation;
 import com.echo.skygazer.io.WebResource;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-public class SkyView extends SurfaceView implements Runnable
+public class SkySimulation extends SurfaceView implements Runnable
 {
     private Thread thread;
     private boolean running = false;
@@ -27,9 +31,10 @@ public class SkyView extends SurfaceView implements Runnable
     private boolean showingPreviewTab = false;
     private float width = 0;
     private float height = 0;
-    private float tx = 100; //Translate all objects' x-coords by this much
-    private float ty = 500; //Translate all objects' y-coords by this much
     private int selectedSkyDotId = -123456789;
+
+    private static SkyView3D skyView;
+    private BottomSheetDialog bottomSheetDialog;
 
     /**
      * This is a (key, value) list.
@@ -37,36 +42,37 @@ public class SkyView extends SurfaceView implements Runnable
      * The value represents the skyObject itself.
      * Using a map allows us to find any particular star, given its ID, in constant time.
      */
-    Map<Integer, SkyObject> skyObjects = new HashMap<Integer, SkyObject>();
+    Map<Integer, SkyObject> skyObjects = new HashMap<>();
 
     Paint paint = new Paint();
     float timer = 0;
 
-    public SkyView(Context context) {
+    public SkySimulation(Context context, BottomSheetDialog bottomSheetDialog) {
         super(context);
+        this.bottomSheetDialog = bottomSheetDialog;
         setWillNotDraw(false);
 
-        for(int i = 0; i<8; i++) {
-            addSkyObject(new SkyDot());
+        skyView = new SkyView3D(getWidth(), getHeight());
+    }
+
+    public void onHygDatabaseInit()
+    {
+        Constellations cstlns = Main.getConstellations();
+        if(cstlns!=null) {
+            for(Map.Entry<Integer, SpecificConstellation> entry : cstlns.getConstellations().entrySet() ) {
+                SpecificConstellation sc = entry.getValue();
+                //Main.log( "Building "+sc.getConstellationName()+"..." );
+                int[] links = sc.getLinks();
+                for(int i = 0; i<links.length-1; i++) {
+                    addSkyObject(new SkyLine( (links[i]), links[i+1]) );
+                    //Main.log("Built link "+i);
+                }
+            }
+        } else {
+            Main.log("WARNING - Constellations are null.");
         }
-        getSkyDot(0).setScreenXY(440, 0);
-        getSkyDot(1).setScreenXY(140, 40);
-        getSkyDot(2).setScreenXY(30, 100);
-        getSkyDot(3).setScreenXY(120, 250);
-        getSkyDot(4).setScreenXY(320, 130);
-        getSkyDot(5).setScreenXY(400, 400);
-        getSkyDot(6).setScreenXY(700, 420);
-        getSkyDot(7).setScreenXY(100, 640);
 
-
-        addSkyObject( new SkyLine(getSkyDot(0), getSkyDot(1)) );
-        addSkyObject( new SkyLine(getSkyDot(1), getSkyDot(2)) );
-        addSkyObject( new SkyLine(getSkyDot(2), getSkyDot(3)) );
-        addSkyObject( new SkyLine(getSkyDot(3), getSkyDot(1)) );
-        addSkyObject( new SkyLine(getSkyDot(7), getSkyDot(6)) );
-        addSkyObject( new SkyLine(getSkyDot(5), getSkyDot(6)) );
-        addSkyObject( new SkyLine(getSkyDot(4), getSkyDot(5)) );
-        addSkyObject( new SkyLine(getSkyDot(7), getSkyDot(3)) );
+        addSkyObject(new SkyLine( 110049, 108728) );
     }
 
     @Override
@@ -75,68 +81,29 @@ public class SkyView extends SurfaceView implements Runnable
         width = getWidth();
         height = getHeight();
 
-        //Background
-        paint.setColor(Color.rgb(21, 22, 48));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+        //3d Sky view
+        if(skyView!=null) {
+            skyView.setWH((int)width, (int)height);
+            skyView.draw(canvas, paint, skyObjects);
+        }
 
-        //SkyObject list
-        for(int i = 0; i<skyObjects.size(); i++) {
-            SkyObject so = skyObjects.get(i);
-            if(so!=null) {
-                so.draw(canvas, paint, tx, ty);
+        TextView wiki = bottomSheetDialog.findViewById(R.id.bottomSheetWikiText);
+        if(wiki!=null) {
+            SkyDot sd = getSelectedSkyDot();
+            String basics = "Loading...\n\n";
+            if(sd!=null) {
+                basics = sd.toUserString();
             }
-        }
 
-        //Crosshair
-        float chRadius = 24;
-        float chWidth = 3;
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(width/2-chRadius, height/2-chWidth, width/2+chRadius, height/2+chWidth, paint);
-        canvas.drawRect(width/2-chWidth, height/2-chRadius, width/2+chWidth, height/2+chRadius, paint);
-
-        //Window
-        if(showingWindow) {
-            HygDatabase.drawDataWindow(this, canvas, paint, width, height);
-        }
-
-        //Star preview tab
-        if(showingPreviewTab) {
-            HygDatabase.drawDataPreviewTab(this, canvas, paint, width, height);
+            String wikiText = basics+WebResource.getCurrentWikipediaText();
+            wiki.setText(wikiText);
         }
 
         timer++;
     }
 
     public void doTapAt(float tapX, float tapY) {
-        //Go through all objects and see if it is being tapped
-
-        //If we clicked on a preview tab
-        if( showingPreviewTab ) {
-            boolean tappedPreview =
-                tapX>=width/2-HygDatabase.ptWidth/2 && tapX<=width/2+HygDatabase.ptWidth/2 &&
-                tapY>=height-HygDatabase.navbarHeight && tapY<=height-HygDatabase.navbarHeight+HygDatabase.ptHeight;
-            if(tappedPreview) {
-                String starName = getSkyDot(selectedSkyDotId).getDisplayName();
-                HygDatabase.selectRow(starName);
-                WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
-                showWindow();
-                return;
-            } else {
-                showingPreviewTab = false;
-            }
-        }
-
-        //If we clicked OUTSIDE a window (outside + close "button")
-        if( showingWindow ) {
-            boolean tappedWindow =
-                tapX>=HygDatabase.wMargin && tapX<=width-HygDatabase.wMargin &&
-                tapY>=HygDatabase.wMargin && tapY<=height-HygDatabase.wMargin*2-140;
-            if(!tappedWindow) {
-                showingWindow = false;
-            }
-        }
-
-        //Also, we need to find the closest star being tapped in case the tap is within the radius of multiple stars
+        //We need to find the closest star being tapped in case the tap is within the radius of multiple stars
         boolean foundSkyDot = false;
         int closestSkyDotID = -123456789;   //Will be unchanged if foundSkyDot stays false
         double minimumDistance = 999999;    //Will be unchanged if foundSkyDot stays false
@@ -145,10 +112,10 @@ public class SkyView extends SurfaceView implements Runnable
             //Get the SkyDot object
             SkyDot sd = getSkyDot(entry.getKey());
             //If this is a SkyDot object, detect if it was just tapped
-            if(sd!=null) {
+            if(sd!=null && !sd.hasNegativeDepth() ) {
                 //Object coordinates
-                float sdx = sd.getScreenX()+tx;
-                float sdy = sd.getScreenY()+ty;
+                float sdx = sd.getScreenX()+skyView.getTx();
+                float sdy = sd.getScreenY()+skyView.getTy();
 
                 //Find distance between tap and star
                 double dist = Math.hypot(sdx-(tapX), sdy-(tapY));
@@ -165,15 +132,14 @@ public class SkyView extends SurfaceView implements Runnable
         }
 
         //If we found SkyDot(s)
-        if(!showingPreviewTab && !showingWindow && foundSkyDot) {
+        if(foundSkyDot) {
             selectedSkyDotId = closestSkyDotID;
-            showPreviewTab();
+            showPreviewTab(getSkyDot(selectedSkyDotId).getDisplayName());
         }
     }
 
     public void doDragAt(float dragX, float dragY) {
-        tx += dragX;
-        ty += dragY;
+        skyView.translate(dragX, dragY);
     }
 
     public void startDrawThread() {
@@ -259,15 +225,20 @@ public class SkyView extends SurfaceView implements Runnable
         return null;
     }
 
+    public SkyLine getSkyLine(int id) {
+        SkyObject so = getSkyObject(id);
+        if( so instanceof SkyLine ) {
+            return (SkyLine)so;
+        }
+        return null;
+    }
+
     public SkyDot getSelectedSkyDot() {
         return getSkyDot(selectedSkyDotId);
     }
 
-    private void showWindow() {
-        showingWindow = true;
-        showingPreviewTab = false;
-    }
-
+    private void showPreviewTab(String starName) {
+        WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
 
     //perfoming the search query
     public void performSearch(String query){
@@ -298,5 +269,18 @@ public class SkyView extends SurfaceView implements Runnable
     private void showPreviewTab() {
         showingWindow = false;
         showingPreviewTab = true;
+        TextView header = bottomSheetDialog.findViewById(R.id.bottomSheetHeader);
+        String name = getSkyDot(selectedSkyDotId).getDisplayName();
+        if(header!=null) {
+            header.setText(name);
+        }
+
+        TextView dbID = bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId);
+        if(dbID!=null) {
+            String idText = "HYG database ID: "+selectedSkyDotId;
+            dbID.setText(idText);
+        }
+
+        bottomSheetDialog.show();
     }
 }

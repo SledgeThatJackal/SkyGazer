@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.App.SideSheet.Modal.Default" parent="Widget.Material3.SideSheet.Modal">
+        <item name="backgroundTint">@color/ice_blue</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView.Default" parent="">
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/mapbox_blue</item>
+        <item name="colorOnSurfaceVariant">@color/mapbox_blue</item>
+        <item name="colorSecondaryContainer">@color/mapbox_blue</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
+    </style>
+
+    <style name="AppSwitchPreference.Default" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/preference_material_switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton.default" parent="">
+        <item name="colorContainer">@color/ice_blue</item>
+        <item name="colorOnContainer">@color/mapbox_blue</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch.Default" parent="">
+        <item name="colorPrimary">@color/mapbox_blue</item>
+        <item name="colorSurfaceVariant">@color/ice_blue</item>
+        <item name="colorOutline">@color/black</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog.Default" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="backgroundTint">@color/ice_blue</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button.Default" parent="">
+        <item name="colorPrimary">@color/mapbox_blue</item>
+        <item name="colorOnPrimary">@color/ice_blue</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="Widget.App.SideSheet.Modal.Low" parent="Widget.Material3.SideSheet.Modal">
+        <item name="backgroundTint">@color/darkest_red</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView.Low" parent="">
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/red</item>
+        <item name="colorOnSurfaceVariant">@color/red</item>
+        <item name="colorSecondaryContainer">@color/red</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
+
+    </style>
+
+    <style name="AppSwitchPreference.Low" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/preference_material_switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton.Low" parent="">
+        <item name="colorContainer">@color/darkest_red</item>
+        <item name="colorOnContainer">@color/black</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch.Low" parent="">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorSurfaceVariant">@color/black</item>
+        <item name="colorOutline">@color/red</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog.Low" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="backgroundTint">@color/darkest_red</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button.Low" parent="">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/red</item>
+    </style>
+</resources>

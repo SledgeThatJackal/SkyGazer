@@ -105,7 +105,7 @@ public class WebResource
                 HygDatabase.init(dlData);
                 Main.log("Initializing hyg-database handler (HygDatabase.java)");
 
-                HygDatabase.setStarsRandomly(SkyFragment.getSkyView(), 8);
+                HygDatabase.setVisibleStars(SkyFragment.getSkySim());
             } break;
         }
     }

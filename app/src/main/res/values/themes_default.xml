@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="Theme.Default" parent="Theme.Material3.Light">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/mapbox_blue</item>
+        <item name="colorPrimaryVariant">@color/ice_blue</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/black</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/gray</item>
+        <item name="android:colorAccent">@color/mapbox_blue</item>
+        <item name="android:textColor">@color/mapbox_blue</item>
+        <item name="android:textColorSecondary">@color/ice_blue</item>
+        <item name="android:colorControlHighlight">@color/ice_blue</item>
+        <item name="sideSheetDialogTheme">@style/ThemeOverlay.App.SideSheetDialog.Default</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView.Default</item>
+        <item name="preferenceTheme">@style/AppPreferenceThemeOverlay.Default</item>
+        <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton.Default</item>
+        <item name="materialSwitchStyle">@style/Widget.App.Switch.Default</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog.Default</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button.Default</item>
+    </style>
+
+    <style name="ThemeOverlay.App.SideSheetDialog.Default" parent="ThemeOverlay.Material3.SideSheetDialog">
+        <item name="sideSheetModalStyle">@style/Widget.App.SideSheet.Modal.Default</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView.Default" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView.Default</item>
+    </style>
+
+    <style name="AppPreferenceThemeOverlay.Default" parent="@style/PreferenceThemeOverlay">
+        <item name ="switchPreferenceCompatStyle">@style/AppSwitchPreference.Default</item>
+    </style>
+
+    <style name="Widget.App.FloatingActionButton.Default" parent="Widget.Material3.FloatingActionButton.Small.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton.default</item>
+    </style>
+
+    <style name="Widget.App.Switch.Default" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch.Default</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog.Default" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog.Default</item>
+    </style>
+
+    <style name="Widget.App.Button.Default" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button.Default</item>
+    </style>
+</resources>

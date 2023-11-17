@@ -1,25 +1,44 @@
 package com.echo.skygazer.gfx.skyobj;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import androidx.preference.PreferenceManager;
+
+import com.echo.skygazer.Main;
+import com.echo.skygazer.MainActivity;
 import com.echo.skygazer.gfx.SkyObject;
+import com.echo.skygazer.gfx.SkySimulation;
+import com.echo.skygazer.gfx.SkyView3D;
+import com.echo.skygazer.ui.sky.SkyFragment;
 
 public class SkyLine extends SkyObject
 {
-    SkyDot so1;
-    SkyDot so2;
+    SkyDot sd1 = null;
+    SkyDot sd2 = null;
+    int id1 = 0;
+    int id2 = 0;
 
-    public SkyLine(SkyDot so1, SkyDot so2) {
-        this.so1 = so1;
-        this.so2 = so2;
+    public SkyLine(int id1, int id2) {
+        this.id1 = id1;
+        this.id2 = id2;
     }
 
     @Override
-    protected void draw(Canvas cs, Paint pt, float tx, float ty) {
-        pt.setColor(Color.rgb(255, 200, 200) );
-        pt.setStrokeWidth(4);
-        cs.drawLine( so1.getScreenX()+tx, so1.getScreenY()+ty, so2.getScreenX()+tx, so2.getScreenY()+ty, pt );
+    protected void draw(Canvas cs, Paint pt, SkyView3D sv3d) {
+        sd1 = SkyFragment.getSkySim().getSkyDot(id1);
+        sd2 = SkyFragment.getSkySim().getSkyDot(id2);
+
+        if( sd1==null || sd2==null ) {
+            return;
+        }
+
+        if( !sd1.hasNegativeDepth() && !sd2.hasNegativeDepth() && Main.getMainActivity().getSettingValue("constellation_highlighting")) {
+            pt.setColor(Color.rgb(255, 200, 200) );
+            pt.setStrokeWidth(3f);
+            cs.drawLine( sd1.getScreenX(), sd1.getScreenY(), sd2.getScreenX(), sd2.getScreenY(), pt );
+        }
     }
 }

@@ -1,30 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.map.MapFragment">
+    tools:context=".ui.map.MapFragment"
+    android:id="@+id/map_fragment">
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:mapbox_cameraTargetLat="35.2271"
-        app:mapbox_cameraTargetLng="-80.8431"
-        app:mapbox_cameraZoom="9.0"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:orientation="vertical">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/lightPollutionToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:layout_margin="30dp"
-            android:src="@android:drawable/ic_menu_view"
-            app:backgroundTint="#9C27B0"
-            app:rippleColor="#9C27B0" />
-    </com.mapbox.mapboxsdk.maps.MapView>
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:mapbox_cameraTargetLat="35.2271"
+            app:mapbox_cameraTargetLng="-80.8431"
+            app:mapbox_cameraZoom="9.0"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/mapDrawerOpen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_margin="30dp"
+                android:src="@drawable/ic_settings_black_24dp"
+                app:backgroundTint="#434343"
+                app:rippleColor="#434343" />
+        </com.mapbox.mapboxsdk.maps.MapView>
+
+
+
+    </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapDrawer"
+        android:layout_gravity="start"
+        app:menu="@menu/map_menu">
+
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
