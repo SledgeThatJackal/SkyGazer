@@ -1,6 +1,7 @@
 package com.echo.skygazer.ui.sky;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -70,6 +71,13 @@ public class SkyFragment extends Fragment {
         skySim.startDrawThread();
         //find the searchView from the layout
         searchView = rootView.findViewById(R.id.search_view);
+
+        // find the textview
+        int searchTextViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(searchTextViewId);
+
+        // set the text color
+        textView.setTextColor(Color.WHITE);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
