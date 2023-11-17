@@ -35,10 +35,7 @@ public class SkyLine extends SkyObject
             return;
         }
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Main.getMainActivity());
-        boolean value = pref.getBoolean("constellation_highlighting", true);
-
-        if( !sd1.hasNegativeDepth() && !sd2.hasNegativeDepth() && value) {
+        if( !sd1.hasNegativeDepth() && !sd2.hasNegativeDepth() && Main.getMainActivity().getSettingValue("constellation_highlighting")) {
             pt.setColor(Color.rgb(255, 200, 200) );
             pt.setStrokeWidth(3f);
             cs.drawLine( sd1.getScreenX(), sd1.getScreenY(), sd2.getScreenX(), sd2.getScreenY(), pt );

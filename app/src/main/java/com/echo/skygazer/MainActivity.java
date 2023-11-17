@@ -143,8 +143,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         if(lowLightModeValue){
             theme.applyStyle(R.style.Theme_LowLight, true);
+            HygDatabase.reinitVisuals();
         } else {
             theme.applyStyle(R.style.Theme_Default, true);
+            HygDatabase.reinitVisuals();
         }
 
         return theme;

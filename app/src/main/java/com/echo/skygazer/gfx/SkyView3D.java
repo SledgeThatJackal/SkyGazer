@@ -37,13 +37,7 @@ public class SkyView3D
     {
         timer+=1.0d;
 
-        //Pitch cannot move past straight above (180) or straight below (-180)
-        if( pitch>180d ) {
-            pitch = 180d;
-        }
-        if( pitch<0 ) {
-            pitch = 0;
-        }
+        clampYawPitch();
 
         //Update rotation matrices based on time, pitch, and yaw
         double theta = timer*0.1;
@@ -84,9 +78,11 @@ public class SkyView3D
         cs.drawRect(fW/2-chWidth, fH/2-chRadius, fW/2+chWidth, fH/2+chRadius, pt);
 
         //Debug info
-        pt.setColor(Color.YELLOW);
-        //cs.drawText("Yaw: "+yaw, 0, 40, pt);
-        //cs.drawText("Pitch: "+pitch, 0, 120, pt);
+        if( Main.getMainActivity().getSettingValue("advanced_info") ) {
+            pt.setColor(Color.YELLOW);
+            cs.drawText("Yaw: "+yaw, 0, 40, pt);
+            cs.drawText("Pitch: "+pitch, 0, 120, pt);
+        }
     }
 
     public Point3d getProjectedPoint(Point3d p1)
@@ -131,4 +127,19 @@ public class SkyView3D
 
     public float getTx()  { return tx; }
     public float getTy()  { return ty; }
+
+    private void clampYawPitch()
+    {
+        //Pitch should move past straight above (<0) or straight below (>180)
+        if( pitch>180d ) {
+            pitch = 180d;
+        }
+        if( pitch<0d ) {
+            pitch = 0d;
+        }
+
+        //Yaw should stay within 0-360 degrees
+        if(yaw<0d) { yaw+=360d; }
+        if(yaw>360d) { yaw-=360d; }
+    }
 }

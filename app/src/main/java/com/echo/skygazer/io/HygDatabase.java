@@ -123,6 +123,7 @@ public class HygDatabase {
         if(initVisuals) {
             return;
         }
+        Main.log("Building SkySimulation...");
 
         //Override specific stars to not add.
         HashSet<Integer> exceptions = new HashSet<>();
