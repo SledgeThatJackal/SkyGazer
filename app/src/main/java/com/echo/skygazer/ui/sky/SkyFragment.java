@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,8 @@ public class SkyFragment extends Fragment {
     private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
     private static SearchView searchView = null;
+    private static ListView listView = null;
+    private List<String>filteredStarNames = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
@@ -72,9 +76,17 @@ public class SkyFragment extends Fragment {
         //find the searchView from the layout
         searchView = rootView.findViewById(R.id.search_view);
 
+        //find the listView from the layout
+        listView = rootView.findViewById(R.id.list_view);
+
+
         // find the textview
         int searchTextViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         TextView textView = (TextView) searchView.findViewById(searchTextViewId);
+
+        //use an array adapter to find the UI from the listView
+        ArrayAdapter adapter = new ArrayAdapter(requireContext(), R.layout.simple_list_item_1, filteredStarNames);
+        listView.setAdapter(adapter);
 
         // set the text color
         textView.setTextColor(Color.WHITE);
@@ -83,13 +95,24 @@ public class SkyFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Main.log(s);
-                skySim.performSearch(query);
-                searchView.clearFocus();
+                if(query != null){
+                    skySim.performSearch(query);
+                    searchView.clearFocus();
+                }
+
+
+                //make the listView invisible again
+                listView.setVisibility(View.GONE);
                 return true;
             }
-
             @Override
-            public boolean onQueryTextChange(String s) {
+            public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()){
+                    listView.setVisibility(View.GONE);
+                } else{
+                    filterStars(newText);
+                    listView.setVisibility(View.VISIBLE);
+                }
                 return false;
             }
         });
@@ -185,7 +208,27 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
+    private void filterStars(String query){
+        filteredStarNames.clear();
 
+        Map<String, Integer> hygDict = HygDatabase.getHygDictionary();
+        Main.log("Dict is " + hygDict);
+        if(hygDict != null && !query.isEmpty()) {
+            for (Map.Entry<String, Integer> entry : hygDict.entrySet()) {
+                String starName = entry.getKey();
+                if (starName != null && starName.toLowerCase().contains(query.toLowerCase())) {
+                    Main.log("test");
+                    filteredStarNames.add(starName);
+                }
+            }
+            if (listView != null && listView.getAdapter() != null) {
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
+                adapter.clear(); // Clear previous data
+                adapter.addAll(filteredStarNames); // Add filtered data
+                adapter.notifyDataSetChanged(); // Notify ListView of dataset change
+            }
+        }
+    }
 
     @Override
     public void onDestroyView() {
