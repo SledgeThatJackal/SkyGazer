@@ -1,5 +1,6 @@
 package com.echo.skygazer.ui.sky;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,6 +20,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import android.widget.SearchView;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,6 +89,25 @@ public class SkyFragment extends Fragment {
 
         //find the listView from the layout
         listView = rootView.findViewById(R.id.list_view);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                //hide the keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (inputMethodManager != null) {
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+
+                //show clicked message
+                Main.log("Position is: " + position);
+                Main.log("Clicked on " + filteredStarNames.get(position));
+                skySim.performSearch(filteredStarNames.get(position));
+                listView.setVisibility(View.GONE);
+                }
+        });
 
 
         // find the textview
