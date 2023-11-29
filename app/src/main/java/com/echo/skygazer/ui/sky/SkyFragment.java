@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.echo.skygazer.Main;
+import com.echo.skygazer.MainActivity;
 import com.echo.skygazer.R;
 import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
@@ -52,7 +53,9 @@ public class SkyFragment extends Fragment {
     private static SkySimulation skySim = null;
     private static SearchView searchView = null;
     private static ListView listView = null;
+    private List<String>originalStarNames = new ArrayList<>();
     private List<String>filteredStarNames = new ArrayList<>();
+    private ArrayAdapter<String>arrayAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
@@ -73,6 +76,9 @@ public class SkyFragment extends Fragment {
         skySim = new SkySimulation(getActivity(), bottomSheetDialog);
         rootLayout.addView(skySim);
         skySim.startDrawThread();
+
+        storeOriginalList();
+
         //find the searchView from the layout
         searchView = rootView.findViewById(R.id.search_view);
 
@@ -85,8 +91,10 @@ public class SkyFragment extends Fragment {
         TextView textView = (TextView) searchView.findViewById(searchTextViewId);
 
         //use an array adapter to find the UI from the listView
-        ArrayAdapter adapter = new ArrayAdapter(requireContext(), R.layout.simple_list_item_1, filteredStarNames);
-        listView.setAdapter(adapter);
+        arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
+        listView.setAdapter(arrayAdapter);
+
+
 
         // set the text color
         textView.setTextColor(Color.WHITE);
@@ -98,6 +106,7 @@ public class SkyFragment extends Fragment {
                 if(query != null){
                     skySim.performSearch(query);
                     searchView.clearFocus();
+                    filterStars(query);
                 }
 
 
@@ -109,6 +118,7 @@ public class SkyFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()){
                     listView.setVisibility(View.GONE);
+
                 } else{
                     filterStars(newText);
                     listView.setVisibility(View.VISIBLE);
@@ -208,27 +218,59 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
-    private void filterStars(String query){
-        filteredStarNames.clear();
-
-        Map<String, Integer> hygDict = HygDatabase.getHygDictionary();
-        Main.log("Dict is " + hygDict);
-        if(hygDict != null && !query.isEmpty()) {
-            for (Map.Entry<String, Integer> entry : hygDict.entrySet()) {
-                String starName = entry.getKey();
-                if (starName != null && starName.toLowerCase().contains(query.toLowerCase())) {
-                    Main.log("test");
-                    filteredStarNames.add(starName);
+    private void storeOriginalList(){
+        if(originalStarNames.isEmpty()){
+            if(originalStarNames.isEmpty()){
+                Map<String, Integer> hygDict = HygDatabase.getHygDictionary();
+                if(hygDict != null) {
+                    originalStarNames.addAll(hygDict.keySet());
                 }
-            }
-            if (listView != null && listView.getAdapter() != null) {
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
-                adapter.clear(); // Clear previous data
-                adapter.addAll(filteredStarNames); // Add filtered data
-                adapter.notifyDataSetChanged(); // Notify ListView of dataset change
             }
         }
     }
+
+    private void resetFilter(){
+        if(originalStarNames.isEmpty()){
+            storeOriginalList();
+        }
+        filteredStarNames.clear();
+        filteredStarNames.addAll(originalStarNames);
+        updateAdapter();
+    }
+
+
+
+    private void filterStars(String query){
+        if (originalStarNames.isEmpty()) {
+            storeOriginalList();
+        }
+
+        if(query.isEmpty()){
+            resetFilter();
+        } else {
+            filteredStarNames.clear();
+            for(String starName: originalStarNames){
+                if(starName != null && starName.toLowerCase().contains(query.toLowerCase())){
+                    filteredStarNames.add(starName);
+                }
+            }
+            updateAdapter();
+        }
+    }
+    private void updateAdapter(){
+
+        if(arrayAdapter != null){
+            arrayAdapter.clear();
+            if(filteredStarNames.isEmpty() && searchView.getQuery().toString().isEmpty()){
+                arrayAdapter.addAll(originalStarNames);
+            }
+            else{
+                arrayAdapter.addAll(filteredStarNames);
+            }
+            arrayAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     @Override
     public void onDestroyView() {
