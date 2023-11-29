@@ -39,6 +39,7 @@ import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.sidesheet.SideSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,6 @@ public class SkyFragment extends Fragment {
                     inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
 
-
                 //show clicked message
                 Main.log("Position is: " + position);
                 Main.log("Clicked on " + filteredStarNames.get(position));
@@ -123,6 +123,7 @@ public class SkyFragment extends Fragment {
         // set the text color
         textView.setTextColor(Color.WHITE);
 
+        //when a user hits enter then it will load up the search feature
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -138,6 +139,7 @@ public class SkyFragment extends Fragment {
                 listView.setVisibility(View.GONE);
                 return true;
             }
+            //if it's empty then show or not show the listView
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()){
@@ -242,6 +244,7 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
+    //store the origina list
     private void storeOriginalList(){
         if(originalStarNames.isEmpty()){
             if(originalStarNames.isEmpty()){
@@ -253,6 +256,7 @@ public class SkyFragment extends Fragment {
         }
     }
 
+    //resetFilter when search query is done
     private void resetFilter(){
         if(originalStarNames.isEmpty()){
             storeOriginalList();
@@ -263,7 +267,7 @@ public class SkyFragment extends Fragment {
     }
 
 
-
+    //go through and create a filtered list for the user
     private void filterStars(String query){
         if (originalStarNames.isEmpty()) {
             storeOriginalList();
@@ -279,8 +283,18 @@ public class SkyFragment extends Fragment {
                 }
             }
             updateAdapter();
+
+            // Display a message using Snackbar when no results are found
+            if (filteredStarNames.isEmpty()) {
+                View rootView = requireView(); // Get the root view of the fragment
+
+                Snackbar snackbar = Snackbar.make(rootView, "No results found", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+
         }
     }
+    //updateAdapter that updates the information into the SkyGazer app
     private void updateAdapter(){
 
         if(arrayAdapter != null){
