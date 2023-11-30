@@ -202,6 +202,8 @@ public class HygDatabase {
         return selectRow(row);
     }
 
+    public static Map<String, Integer> getHygDictionary(){return hygDictionary;}
+
     public static void reinitVisuals() {
         initVisuals = false;
     }

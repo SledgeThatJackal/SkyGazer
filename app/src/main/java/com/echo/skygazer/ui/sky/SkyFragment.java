@@ -1,5 +1,6 @@
 package com.echo.skygazer.ui.sky;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,18 +10,25 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import android.widget.SearchView;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.echo.skygazer.Main;
+import com.echo.skygazer.MainActivity;
 import com.echo.skygazer.R;
 import com.echo.skygazer.constellationList.ConstellationAdapter;
 import com.echo.skygazer.databinding.FragmentSkyBinding;
@@ -31,6 +39,7 @@ import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.io.SpecificConstellation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.sidesheet.SideSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +58,10 @@ public class SkyFragment extends Fragment {
     private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
     private static SearchView searchView = null;
+    private static ListView listView = null;
+    private List<String>originalStarNames = new ArrayList<>();
+    private List<String>filteredStarNames = new ArrayList<>();
+    private ArrayAdapter<String>arrayAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sky, container, false);
@@ -69,27 +82,73 @@ public class SkyFragment extends Fragment {
         skySim = new SkySimulation(getActivity(), bottomSheetDialog);
         rootLayout.addView(skySim);
         skySim.startDrawThread();
+
+        storeOriginalList();
+
         //find the searchView from the layout
         searchView = rootView.findViewById(R.id.search_view);
+
+        //find the listView from the layout
+        listView = rootView.findViewById(R.id.list_view);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                //hide the keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (inputMethodManager != null) {
+                    inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+                //show clicked message
+                Main.log("Position is: " + position);
+                Main.log("Clicked on " + filteredStarNames.get(position));
+                skySim.performSearch(filteredStarNames.get(position));
+                listView.setVisibility(View.GONE);
+                }
+        });
+
 
         // find the textview
         int searchTextViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         TextView textView = (TextView) searchView.findViewById(searchTextViewId);
 
+        //use an array adapter to find the UI from the listView
+        arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
+        listView.setAdapter(arrayAdapter);
+
+
+
         // set the text color
         textView.setTextColor(Color.WHITE);
 
+        //when a user hits enter then it will load up the search feature
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Main.log(s);
-                skySim.performSearch(query);
-                searchView.clearFocus();
+                if(query != null){
+                    skySim.performSearch(query);
+                    searchView.clearFocus();
+                    filterStars(query);
+                }
+
+
+                //make the listView invisible again
+                listView.setVisibility(View.GONE);
                 return true;
             }
-
+            //if it's empty then show or not show the listView
             @Override
-            public boolean onQueryTextChange(String s) {
+            public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()){
+                    listView.setVisibility(View.GONE);
+
+                } else{
+                    filterStars(newText);
+                    listView.setVisibility(View.VISIBLE);
+                }
                 return false;
             }
         });
@@ -185,6 +244,70 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
+    //store the origina list
+    private void storeOriginalList(){
+        if(originalStarNames.isEmpty()){
+            if(originalStarNames.isEmpty()){
+                Map<String, Integer> hygDict = HygDatabase.getHygDictionary();
+                if(hygDict != null) {
+                    originalStarNames.addAll(hygDict.keySet());
+                }
+            }
+        }
+    }
+
+    //resetFilter when search query is done
+    private void resetFilter(){
+        if(originalStarNames.isEmpty()){
+            storeOriginalList();
+        }
+        filteredStarNames.clear();
+        filteredStarNames.addAll(originalStarNames);
+        updateAdapter();
+    }
+
+
+    //go through and create a filtered list for the user
+    private void filterStars(String query){
+        if (originalStarNames.isEmpty()) {
+            storeOriginalList();
+        }
+
+        if(query.isEmpty()){
+            resetFilter();
+        } else {
+            filteredStarNames.clear();
+            for(String starName: originalStarNames){
+                if(starName != null && starName.toLowerCase().contains(query.toLowerCase())){
+                    filteredStarNames.add(starName);
+                }
+            }
+            updateAdapter();
+
+            // Display a message using Snackbar when no results are found
+            if (filteredStarNames.isEmpty()) {
+                View rootView = requireView(); // Get the root view of the fragment
+
+                Snackbar snackbar = Snackbar.make(rootView, "No results found", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+
+        }
+    }
+    //updateAdapter that updates the information into the SkyGazer app
+    private void updateAdapter(){
+
+        if(arrayAdapter != null){
+            arrayAdapter.clear();
+            if(filteredStarNames.isEmpty() && searchView.getQuery().toString().isEmpty()){
+                arrayAdapter.addAll(originalStarNames);
+            }
+            else{
+                arrayAdapter.addAll(filteredStarNames);
+            }
+            arrayAdapter.notifyDataSetChanged();
+        }
+    }
 
 
     @Override
