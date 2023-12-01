@@ -265,6 +265,7 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         bottomSheetDialog.show();
+
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         if(pref.getBoolean("audio_feedback", false)){
             textToSpeech.speak(name, TextToSpeech.QUEUE_FLUSH, null, null);
