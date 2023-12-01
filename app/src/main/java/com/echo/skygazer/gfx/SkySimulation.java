@@ -1,11 +1,15 @@
 package com.echo.skygazer.gfx;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.speech.tts.TextToSpeech;
 import android.view.SurfaceView;
 import android.widget.TextView;
+
+import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.Main;
 import com.echo.skygazer.R;
@@ -20,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -35,6 +40,7 @@ public class SkySimulation extends SurfaceView implements Runnable
 
     private static SkyView3D skyView;
     private BottomSheetDialog bottomSheetDialog;
+    private TextToSpeech textToSpeech;
 
     /**
      * This is a (key, value) list.
@@ -51,6 +57,12 @@ public class SkySimulation extends SurfaceView implements Runnable
         super(context);
         this.bottomSheetDialog = bottomSheetDialog;
         setWillNotDraw(false);
+
+        textToSpeech = new TextToSpeech(getContext(), i -> {
+            if(i != TextToSpeech.ERROR){
+                textToSpeech.setLanguage(Locale.US);
+            }
+        });
 
         skyView = new SkyView3D(getWidth(), getHeight());
     }
@@ -253,6 +265,10 @@ public class SkySimulation extends SurfaceView implements Runnable
         }
 
         bottomSheetDialog.show();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if(pref.getBoolean("audio_feedback", false)){
+            textToSpeech.speak(name, TextToSpeech.QUEUE_FLUSH, null, null);
+        }
     }
 
     //perfoming the search query
