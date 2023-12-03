@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Vibrator;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
@@ -143,11 +144,12 @@ public class SkySimulation extends SurfaceView implements Runnable
     public void doDragAt(float dragX, float dragY) {
         skyView.translate(dragX, dragY);
 
+        skyView.translate(dragX, dragY);
 
 
         float centerX = getWidth() / 2f;
         float centerY = getHeight() / 2f;
-        float detectionRadius = 10;
+        float detectionRadius = 60;
 
         for(Map.Entry<Integer, SkyObject> entry: skyObjects.entrySet()){
             SkyDot sd = getSkyDot(entry.getKey());
@@ -161,8 +163,17 @@ public class SkySimulation extends SurfaceView implements Runnable
 
                 if(dist < detectionRadius){
                     Main.log("Star is near the center: " + sd.getDisplayName());
+                    vibrateDevice();
                 }
             }
+        }
+    }
+
+    private void vibrateDevice() {
+        Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(500);
         }
     }
 
