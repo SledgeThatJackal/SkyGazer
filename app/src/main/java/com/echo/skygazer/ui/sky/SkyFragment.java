@@ -332,28 +332,7 @@ public class SkyFragment extends Fragment {
         }
     }
 
-    public boolean isStarAtCenter(float x, float y){
-        WindowManager windowManager = (WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
 
-        Point size = new Point();
-        display.getSize(size);
-
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-        int middleX = screenWidth / 2;
-        int middleY = screenHeight / 2;
-
-        double distanceToCenter = Math.sqrt(Math.pow(middleX - x, 2) + Math.pow(middleY - y, 2));
-
-        double thresholdDistance = 50;
-
-        return distanceToCenter <= thresholdDistance;
-
-
-
-    }
 
     @Override
     public void onDestroyView() {

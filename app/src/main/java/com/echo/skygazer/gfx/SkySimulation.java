@@ -36,6 +36,8 @@ public class SkySimulation extends SurfaceView implements Runnable
     private static SkyView3D skyView;
     private BottomSheetDialog bottomSheetDialog;
 
+
+
     /**
      * This is a (key, value) list.
      * The key represents the ID of the skyObject (arbitrary for now, but later it will likely represent the row # in the star database).
@@ -140,6 +142,28 @@ public class SkySimulation extends SurfaceView implements Runnable
 
     public void doDragAt(float dragX, float dragY) {
         skyView.translate(dragX, dragY);
+
+
+
+        float centerX = getWidth() / 2f;
+        float centerY = getHeight() / 2f;
+        float detectionRadius = 10;
+
+        for(Map.Entry<Integer, SkyObject> entry: skyObjects.entrySet()){
+            SkyDot sd = getSkyDot(entry.getKey());
+            if(sd != null && !sd.hasNegativeDepth()){
+                //object coordinates
+                float sdx = sd.getScreenX() + skyView.getTx();
+                float sdy = sd.getScreenY() + skyView.getTy();
+
+                //Find distance between dragX and star
+                double dist = Math.hypot(sdx-(centerX), sdy-(centerY));
+
+                if(dist < detectionRadius){
+                    Main.log("Star is near the center: " + sd.getDisplayName());
+                }
+            }
+        }
     }
 
     public void startDrawThread() {
