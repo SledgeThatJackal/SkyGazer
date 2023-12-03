@@ -264,7 +264,7 @@ public class SkySimulation extends SurfaceView implements Runnable
             String starName = HygDatabase.getStringFromID(starID);
             Main.log("Star is " + searchResults.get(0));
             Main.log("Star name is " + HygDatabase.getStringFromID(starID));
-            //HygDatabase.selectRow(starName);
+
             WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
             selectedSkyDotId = starID;
 

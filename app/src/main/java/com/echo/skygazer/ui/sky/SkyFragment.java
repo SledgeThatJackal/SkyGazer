@@ -1,15 +1,20 @@
 package com.echo.skygazer.ui.sky;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -172,6 +177,15 @@ public class SkyFragment extends Fragment {
                         Main.log( "Touched screen @ ("+x+", "+y+")" );
                         rootView.performClick();
                         skySim.doTapAt(x, y);
+
+                        if(searchView != null && searchView.hasFocus()){
+                            searchView.clearFocus();
+                        }
+
+                        InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        if (inputMethodManager != null) {
+                            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
                     } break;
                     case MotionEvent.ACTION_UP: {
                         lastDragX = 0;
@@ -244,7 +258,7 @@ public class SkyFragment extends Fragment {
 
     public static SkySimulation getSkySim() { return skySim; }
 
-    //store the origina list
+    //store the original list
     private void storeOriginalList(){
         if(originalStarNames.isEmpty()){
             if(originalStarNames.isEmpty()){
@@ -309,6 +323,37 @@ public class SkyFragment extends Fragment {
         }
     }
 
+    //Adding vibration
+    public void initializeVibrationFeature(){
+        Vibrator vibrator = (Vibrator) requireContext().getSystemService(Context.ACCOUNT_SERVICE);
+
+        if (vibrator != null && vibrator.hasVibrator()){
+            vibrator.vibrate(500);
+        }
+    }
+
+    public boolean isStarAtCenter(float x, float y){
+        WindowManager windowManager = (WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
+        int middleX = screenWidth / 2;
+        int middleY = screenHeight / 2;
+
+        double distanceToCenter = Math.sqrt(Math.pow(middleX - x, 2) + Math.pow(middleY - y, 2));
+
+        double thresholdDistance = 50;
+
+        return distanceToCenter <= thresholdDistance;
+
+
+
+    }
 
     @Override
     public void onDestroyView() {
