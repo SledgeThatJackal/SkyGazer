@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Vibrator;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ public class SkySimulation extends SurfaceView implements Runnable
 
     private static SkyView3D skyView;
     private BottomSheetDialog bottomSheetDialog;
+
+
 
     /**
      * This is a (key, value) list.
@@ -140,6 +143,38 @@ public class SkySimulation extends SurfaceView implements Runnable
 
     public void doDragAt(float dragX, float dragY) {
         skyView.translate(dragX, dragY);
+
+        skyView.translate(dragX, dragY);
+
+
+        float centerX = getWidth() / 2f;
+        float centerY = getHeight() / 2f;
+        float detectionRadius = 60;
+
+        for(Map.Entry<Integer, SkyObject> entry: skyObjects.entrySet()){
+            SkyDot sd = getSkyDot(entry.getKey());
+            if(sd != null && !sd.hasNegativeDepth()){
+                //object coordinates
+                float sdx = sd.getScreenX() + skyView.getTx();
+                float sdy = sd.getScreenY() + skyView.getTy();
+
+                //Find distance between dragX and star
+                double dist = Math.hypot(sdx-(centerX), sdy-(centerY));
+
+                if(dist < detectionRadius){
+                    Main.log("Star is near the center: " + sd.getDisplayName());
+                    vibrateDevice();
+                }
+            }
+        }
+    }
+
+    private void vibrateDevice() {
+        Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(500);
+        }
     }
 
     public void startDrawThread() {
@@ -264,7 +299,7 @@ public class SkySimulation extends SurfaceView implements Runnable
             String starName = HygDatabase.getStringFromID(starID);
             Main.log("Star is " + searchResults.get(0));
             Main.log("Star name is " + HygDatabase.getStringFromID(starID));
-            //HygDatabase.selectRow(starName);
+
             WebResource wr = new WebResource("https://en.wikipedia.org/wiki/"+starName, "wiki/"+starName+".html",1234);
             selectedSkyDotId = starID;
 

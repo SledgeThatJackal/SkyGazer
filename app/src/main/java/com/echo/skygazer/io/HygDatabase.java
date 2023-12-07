@@ -168,7 +168,6 @@ public class HygDatabase {
         Main.log(hygDictionary);
         for(Map.Entry<String, Integer> entry: hygDictionary.entrySet()){
             String starName = entry.getKey();
-            //fix bug where it doesnt recognize uppercase but recognizes lowercase
             if(starName == null){
                 continue;
             }
