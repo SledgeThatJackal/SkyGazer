@@ -175,7 +175,11 @@ public class SkySimulation extends SurfaceView implements Runnable
 
                 if(dist < detectionRadius){
                     Main.log("Star is near the center: " + sd.getDisplayName());
-                    vibrateDevice();
+
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    if(pref.getBoolean("tactile_feedback", false)) {
+                        vibrateDevice();
+                    }
                 }
             }
         }
