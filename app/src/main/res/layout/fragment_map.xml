@@ -41,6 +41,15 @@
                 android:max="80"
                 android:progress="0" />
 
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxWidth="15dp"
+                android:maxHeight="17dp"
+                android:minWidth="15dp"
+                android:minHeight="17dp" />
+
         </com.mapbox.mapboxsdk.maps.MapView>
 
 

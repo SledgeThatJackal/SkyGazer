@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -107,6 +108,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
                         style.addLayer(newRasterLayer);
                     }
                 }
+
+                TextView text = root.findViewById(R.id.timeText);
+                text.setText("+"+ (i * 3) +" Hours");
+                float x = seekBar.getThumb().getBounds().left;
+                float y = seekBar.getY();
+                text.setX(x);
+                text.setY(y + 225);
             }
 
             @Override
