@@ -42,6 +42,7 @@ public class SkyFragment extends Fragment {
     private FragmentSkyBinding binding;
     private float lastDragX = 0;
     private float lastDragY = 0;
+    private long lastTap = -1;
     private boolean dragging = false;
     private ImageButton constellationVisibilityButton;
     private SideSheetDialog sideSheetDialog;
@@ -94,7 +95,6 @@ public class SkyFragment extends Fragment {
         rootView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-
                 int action = motionEvent.getAction();
 
                 float x = motionEvent.getX();
@@ -102,14 +102,19 @@ public class SkyFragment extends Fragment {
 
                 switch (action & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN: {
-                        Main.log( "Touched screen @ ("+x+", "+y+")" );
-                        rootView.performClick();
-                        skySim.doTapAt(x, y);
+                        lastTap = System.currentTimeMillis();
                     } break;
                     case MotionEvent.ACTION_UP: {
                         lastDragX = 0;
                         lastDragY = 0;
                         dragging = false;
+
+                        long now = System.currentTimeMillis();
+                        if( now-lastTap<1000 ) {
+                            Main.log( "Touched screen @ ("+x+", "+y+")" );
+                            rootView.performClick();
+                            skySim.doTapAt(x, y);
+                        }
                     } break;
                     case MotionEvent.ACTION_MOVE: {
                         if(dragging) {

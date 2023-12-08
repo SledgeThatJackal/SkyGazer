@@ -1,16 +1,27 @@
 package com.echo.skygazer;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,12 +33,19 @@ import com.echo.skygazer.databinding.ActivityMainBinding;
 import com.echo.skygazer.io.HygDatabase;
 import com.echo.skygazer.ui.sky.SkyFragment;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     //Progress Dialog
     public static final int PROGRESS_BAR_TYPE = 0;
 
     private ActivityMainBinding binding;
+    private static double locLatitude = -9999;
+    private static double locLongitude = -9999;
+    private static double locAzimuth = -9999;
+    private static double locPitch = -9999;
+    private static double locRoll = -9999;
+
+    private static SensorManager snsrManager;
 
     public enum NavSectionID { MAP, SKY, SETTINGS, UNKNOWN }
     private NavSectionID navSectionId = NavSectionID.UNKNOWN;
@@ -77,7 +95,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-        //Listener for app location change (Map, Sky, Settings)
+
+
+        /** Listener for app location change (Map, Sky, Settings) */
         navController.addOnDestinationChangedListener(
             (thisNavCtrl, navDst, bundle) -> {
                 navSectionId = NavSectionID.UNKNOWN;
@@ -110,9 +130,87 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         );
 
+        /** Listener for real life GPS location */
+        LocationListener locationListenerGPS = new LocationListener() {
+            @Override
+            public void onLocationChanged(android.location.Location location) {
+                locLatitude = location.getLatitude();
+                locLongitude = location.getLongitude();
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Toast.makeText(getBaseContext(), "GPS successfully turned on.", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(getBaseContext(), "Warning: GPS was turned off.", Toast.LENGTH_LONG).show();
+            }
+        };
+        //Get permissions and build location manager.
+        if (
+            ActivityCompat.checkSelfPermission(getBaseContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(getBaseContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123456);
+        } else {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListenerGPS);
+        }
+
+        /** Get sensors for phone orientation */
+        snsrManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        SensorEventListener sensorEventListener = new SensorEventListener() {
+            float[] mAccelerometer;
+            float[] mGeomagnetic;
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    mAccelerometer = event.values;
+                    locPitch = event.values[2]*180d/Math.PI/3.2;
+                }
+                if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                    mGeomagnetic = event.values;
+                }
+
+                if ( mAccelerometer!=null && mGeomagnetic!=null) {
+                    float[] R = new float[9];
+                    float[] I = new float[9];
+                    boolean success = SensorManager.getRotationMatrix(R, I, mAccelerometer, mGeomagnetic);
+
+                    if (success) {
+                        float[] orientationData = new float[3];
+                        SensorManager.getOrientation(R, orientationData);
+                        locAzimuth = orientationData[0]*180d/Math.PI;
+                        locRoll = orientationData[2]*180d/Math.PI;
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                // Handle accuracy changes if needed
+            }
+        };
+
+        // Register the listeners
+        snsrManager.registerListener(sensorEventListener, snsrManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),  SensorManager.SENSOR_DELAY_NORMAL);
+        snsrManager.registerListener(sensorEventListener, snsrManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_NORMAL);
+        snsrManager.registerListener(sensorEventListener, snsrManager.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_NORMAL);
         //Main class
         Main.main(this);
     }
+
+    public static double getLocLatitude() { return locLatitude; }
+    public static double getLocLongitude() { return locLongitude; }
+    public static boolean isLocationInvalid() { return locLatitude==-9999d || locLongitude==-9999d; }
+    public static double getLocAzimuth() { return locAzimuth; }
+    public static double getLocPitch() { return locPitch; }
+    public static double getLocRoll() { return locRoll; }
+
+    public static boolean isOrientationInvalid() { return locAzimuth==-9999d || locPitch==-9999d || locRoll==-9999d; }
 
     /**
      * Method called when the user presses the back button.
@@ -158,20 +256,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return val;
     }
 
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if(s.equals("low_light_mode")){
             recreate();
         }
     }
+
 }
 
-/*  Example code for retrieving a preference variable
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean value = pref.getBoolean("constellation_highlighting", true);
 
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, String.valueOf(value), duration);
-        toast.show();
+
+/*  Example code for retrieving a preference variable
+    if( Main.getMainActivity().getSettingValue("constellation_highlighting") ) {
+        //do stuff
+    }
  */
