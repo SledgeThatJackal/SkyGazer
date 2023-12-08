@@ -94,7 +94,7 @@ public class Matrix4d {
     }
 
     /**
-     * Multiply vector 'a' by the matrix 'b' (which should be the projection matrix).
+     * Multiply vector 'a' by the matrix 'b'
      * Here, 'a' is treated as a 4D vector with w=1 and the original 3 coordinates (x,y,z) remaining the same.
      * In the result, each of these 3 coordinates are divided by the w that we obtain.
      * @return 3D point which has been transformed.
