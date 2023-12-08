@@ -46,4 +46,16 @@
         android:contentDescription="@string/constellation_visibility_description"
         app:srcCompat="@drawable/visible_constellation_icon"
         tools:ignore="RelativeOverlap" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/experimental_ar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/red"
+        app:srcCompat="@drawable/ar_art"
+        android:contentDescription="@string/constellation_visibility_description"
+        tools:ignore="RelativeOverlap" />
 </RelativeLayout>

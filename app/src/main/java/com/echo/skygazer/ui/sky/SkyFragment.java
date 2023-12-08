@@ -64,6 +64,7 @@ public class SkyFragment extends Fragment {
     private long lastTap = -1;
     private boolean dragging = false;
     private ImageButton constellationVisibilityButton;
+    private ImageButton arToggleButton;
     private SideSheetDialog sideSheetDialog;
     private BottomSheetDialog bottomSheetDialog;
     private static SkySimulation skySim = null;
@@ -79,6 +80,7 @@ public class SkyFragment extends Fragment {
 
         // Set up FAB for constellation visibility
         constellationVisibilityButton = (ImageButton) rootView.findViewById(R.id.constellation_visible_button);
+        arToggleButton = (ImageButton) rootView.findViewById(R.id.experimental_ar);
 
         // Initialize side sheet that displays the currently visible and not visible constellations
         sideSheetDialog = new SideSheetDialog(requireContext());
@@ -292,6 +294,13 @@ public class SkyFragment extends Fragment {
             bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId).setVisibility(View.GONE);
             bottomSheetDialog.findViewById(R.id.bottomSheetExpand).setVisibility(View.VISIBLE);
             bottomSheetDialog.findViewById(R.id.bottomSheetCollapse).setVisibility(View.GONE);
+        });
+
+        arToggleButton.setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(getString(R.string.focused_view_id), !sharedPreferences.getBoolean("focused_view", false));
+            editor.apply();
         });
 
         return rootView;
