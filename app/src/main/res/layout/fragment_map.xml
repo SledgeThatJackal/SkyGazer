@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.map.MapFragment"
-    android:id="@+id/map_fragment">
+    tools:context=".ui.map.MapFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,17 +31,37 @@
                 android:src="@drawable/ic_settings_black_24dp"
                 app:backgroundTint="#434343"
                 app:rippleColor="#434343" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                style="@android:style/Widget.Material.SeekBar"
+                android:layout_width="375dp"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:max="60"
+                android:progress="0" />
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxWidth="15dp"
+                android:maxHeight="17dp"
+                android:minWidth="15dp"
+                android:minHeight="17dp" />
+
         </com.mapbox.mapboxsdk.maps.MapView>
 
 
-
     </LinearLayout>
+
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/mapDrawer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mapDrawer"
         android:layout_gravity="start"
         app:menu="@menu/map_menu">
 
     </com.google.android.material.navigation.NavigationView>
+
 </androidx.drawerlayout.widget.DrawerLayout>

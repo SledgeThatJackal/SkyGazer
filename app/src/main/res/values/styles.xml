@@ -38,6 +38,14 @@
         <item name="colorOnPrimary">@color/ice_blue</item>
     </style>
 
+    <style name="ThemeOverlay.App.NavigationView.Default" parent="">
+        <item name="colorSurface">@color/ice_blue</item>
+        <item name="colorOnSurfaceVariant">@color/mapbox_blue</item>
+        <item name="colorSecondaryContainer">@color/mapbox_blue</item>
+        <item name="colorOnSecondaryContainer">@color/ice_blue</item>
+        <item name="android:listDivider">@color/mapbox_blue</item>
+    </style>
+
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">24dp</item>
@@ -80,5 +88,13 @@
     <style name="ThemeOverlay.App.Button.Low" parent="">
         <item name="colorPrimary">@color/black</item>
         <item name="colorOnPrimary">@color/red</item>
+    </style>
+
+    <style name="ThemeOverlay.App.NavigationView.Low" parent="">
+        <item name="colorSurface">@color/dark_red</item>
+        <item name="colorOnSurfaceVariant">@color/black</item>
+        <item name="colorSecondaryContainer">@color/black</item>
+        <item name="colorOnSecondaryContainer">@color/dark_red</item>
+        <item name="android:listDivider">@color/black</item>
     </style>
 </resources>

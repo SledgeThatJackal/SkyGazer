@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,8 +39,12 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.RasterLayer;
+import com.mapbox.mapboxsdk.style.sources.RasterSource;
+import com.mapbox.mapboxsdk.style.sources.TileSet;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, NavigationView.OnNavigationItemSelectedListener {
@@ -77,6 +83,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+
 
         return root;
     }
@@ -183,6 +191,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
         enableLocationComponent(style);
         toggleLightPollutionLayer();
         toggleCloudCoverLayer();
+
+        SeekBar seekBar = root.findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                long unixTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+                unixTime += i * (3 * 3600);
+                if(style != null){
+                    RasterSource rasterSource = style.getSourceAs("cloudCover");
+                    if(rasterSource != null){
+                        TileSet newTileSet = new TileSet("1.0.0", "https://maps.openweathermap.org/maps/2.0/weather/CL/{z}/{x}/{y}?date="+unixTime+"&appid=01f855a4eb997f16a95ed8e54118d97c");
+                        RasterSource newRasterSource = new RasterSource("cloudCover", newTileSet);
+
+                        style.removeLayer("cloudCover");
+
+                        style.removeSource("cloudCover");
+                        style.addSource(newRasterSource);
+
+
+                        RasterLayer newRasterLayer = new RasterLayer("cloudCover", "cloudCover");
+                        style.addLayer(newRasterLayer);
+                    }
+                }
+
+                TextView text = root.findViewById(R.id.timeText);
+                text.setText("+"+ (i * 3) +" Hours");
+                float x = seekBar.getThumb().getBounds().left;
+                float y = seekBar.getY();
+                text.setX(x);
+                text.setY(y + 225);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                TextView text = root.findViewById(R.id.timeText);
+                text.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                TextView text = root.findViewById(R.id.timeText);
+                text.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void toggleLightPollutionLayer(){
