@@ -111,8 +111,8 @@ public class SkyFragment extends Fragment {
             textView.setTextColor(getResources().getColor(R.color.light_red));
             listView.setBackgroundColor(getResources().getColor(R.color.black));
         } else {
-            textView.setTextColor(Color.WHITE);
-            listView.setBackgroundColor(getResources().getColor(R.color.night_blue));
+            textView.setTextColor(getResources().getColor(com.mapbox.mapboxsdk.R.color.mapbox_blue));
+            listView.setBackgroundColor(getResources().getColor(R.color.navy_blue));
         }
 
 
