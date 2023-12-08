@@ -64,9 +64,9 @@ public class SkyView3D
         pchRotMatrix.setToXRotationMatrix(pitch*Math.PI/180.0);
         yRotMatrix.setToYRotationMatrix(0);
         aziRotMatrix.setToZRotationMatrix(azimuth*Math.PI/180.0);
-        timeRotMatrix.setToYRotationMatrix( 360*Sensors.getDayFractionPassed() );
-        latRotMatrix.setToXRotationMatrix( Sensors.getLocation(0)-90d );
-        lonRotMatrix.setToZRotationMatrix( Sensors.getLocation(1) );
+        timeRotMatrix.setToYRotationMatrix((360*Sensors.getDayFractionPassed()) * (Math.PI/180d));
+        latRotMatrix.setToXRotationMatrix((Sensors.getLocation(0)-90d) * (Math.PI/180d));
+        lonRotMatrix.setToZRotationMatrix( Sensors.getLocation(1) * (Math.PI/180d));
 
         /* Background */
         //Set color to dark blue
