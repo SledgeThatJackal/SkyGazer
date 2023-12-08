@@ -3,8 +3,10 @@ package com.echo.skygazer.ui.sky;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -49,6 +51,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import android.view.Window;
 
 import java.util.List;
 
@@ -96,6 +100,22 @@ public class SkyFragment extends Fragment {
         //find the listView from the layout
         listView = rootView.findViewById(R.id.list_view);
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        boolean lowLightModeValue = pref.getBoolean("low_light_mode", false);
+
+        int searchTextViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(searchTextViewId);
+
+        if (lowLightModeValue) {
+            // set the text color
+            textView.setTextColor(getResources().getColor(R.color.light_red));
+            listView.setBackgroundColor(getResources().getColor(R.color.black));
+        } else {
+            textView.setTextColor(Color.WHITE);
+            listView.setBackgroundColor(getResources().getColor(R.color.night_blue));
+        }
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -114,19 +134,14 @@ public class SkyFragment extends Fragment {
                 }
         });
 
-
-        // find the textview
-        int searchTextViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = (TextView) searchView.findViewById(searchTextViewId);
-
         //use an array adapter to find the UI from the listView
         arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
         listView.setAdapter(arrayAdapter);
 
 
 
-        // set the text color
-        textView.setTextColor(Color.WHITE);
+
+
 
         //when a user hits enter then it will load up the search feature
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -161,6 +176,23 @@ public class SkyFragment extends Fragment {
         if( HygDatabase.isInitialized() ) {
             HygDatabase.setVisibleStars( getSkySim() );
         }
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect r = new Rect();
+            rootView.getWindowVisibleDisplayFrame(r);
+            int screenHeight = rootView.getRootView().getHeight();
+
+            // Calculate the height difference between the rootView height and visible display frame height
+            int keypadHeight = screenHeight - r.bottom;
+
+            // If the height difference is greater than a certain threshold (considering keyboard might not take full screen height)
+            // Hide the navigation bar, otherwise show it
+            if (keypadHeight > screenHeight * 0.15) {
+                rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            } else {
+                rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            }
+        });
 
         //Touch detection listener
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -237,7 +269,6 @@ public class SkyFragment extends Fragment {
 
         bottomSheetDialog.findViewById(R.id.bottomSheetExpand).setOnClickListener(view -> {
             bottomSheetDialog.findViewById(R.id.bottomSheetWikiText).setVisibility(View.VISIBLE);
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
             if(pref.getBoolean("advanced_info", false)){
                 bottomSheetDialog.findViewById(R.id.bottomSheetDatabaseId).setVisibility(View.VISIBLE);
             }
