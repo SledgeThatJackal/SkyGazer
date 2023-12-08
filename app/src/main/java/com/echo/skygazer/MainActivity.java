@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
 
+
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean lowLightModeValue = pref.getBoolean("low_light_mode", false);
 
