@@ -40,4 +40,5 @@
     <string name="bottomSheetInfo">The Letter i</string>
     <string name="expand">Expand</string>
     <string name="collapse">Collapse</string>
+    <string name="focused_view_id">focused_view</string>
 </resources>

@@ -84,6 +84,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // Create Shared Preference Manager to listen for theme change
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 
+        // I don't know if the if itself is needed, but to be safe it's there to not overwrite the saved value.
+        if(!getSettingValue("focused_view")){
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(getString(R.string.focused_view_id), false);
+            editor.apply();
+        }
+
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean(getString(R.string.focused_view_id), true);
+//        editor.apply();
+
         // Create functional bottom navbar with 'map_view', 'sky_view', 'settings'
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
             R.id.map_view, R.id.sky_view, R.id.settings
