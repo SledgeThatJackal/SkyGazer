@@ -38,7 +38,7 @@
                 android:layout_width="375dp"
                 android:layout_height="200dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:max="80"
+                android:max="60"
                 android:progress="0" />
 
             <TextView
