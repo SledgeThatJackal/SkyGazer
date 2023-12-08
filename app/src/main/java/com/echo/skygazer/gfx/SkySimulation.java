@@ -67,7 +67,7 @@ public class SkySimulation extends SurfaceView implements Runnable
             }
         });
 
-        skyView = new SkyView3D(getWidth(), getHeight());
+        skyView = new SkyView3D(getWidth(), getHeight(), getContext());
     }
 
     public void onHygDatabaseInit()

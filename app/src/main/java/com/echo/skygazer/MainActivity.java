@@ -107,11 +107,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             editor.apply();
         }
 
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean(getString(R.string.focused_view_id), true);
-//        editor.apply();
-
         // Create functional bottom navbar with 'map_view', 'sky_view', 'settings'
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
             R.id.map_view, R.id.sky_view, R.id.settings
@@ -313,11 +308,3 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }
-
-
-
-/*  Example code for retrieving a preference variable
-    if( Main.getMainActivity().getSettingValue("constellation_highlighting") ) {
-        //do stuff
-    }
- */

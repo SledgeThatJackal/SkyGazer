@@ -1,11 +1,18 @@
 package com.echo.skygazer.gfx;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 import com.echo.skygazer.Main;
+import com.echo.skygazer.MainActivity;
+import com.echo.skygazer.R;
 import com.echo.skygazer.gfx.math.Matrix4d;
 import com.echo.skygazer.gfx.math.Point3d;
 import com.echo.skygazer.gfx.skyobj.SkyDot;
@@ -39,18 +46,23 @@ public class SkyView3D
     private double roll;    //Rotation of phone screen
     SkyDot sd = new SkyDot();
 
-    public SkyView3D(int width, int height)
+    Context context;
+
+    public SkyView3D(int width, int height, Context context)
     {
         this.width = width;
         this.height = height;
+        this.context = context;
     }
 
     public void draw(Canvas cs, Paint pt, Map<Integer, SkyObject> skyObjects)
     {
         //Enable experimental AR
-        if(!true) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if(pref.getBoolean("focused_view", false)) {
             azimuth = Sensors.getOrientation(0);
             pitch = Sensors.getOrientation(1);
+
         }
 
         timer+=1.0d;
